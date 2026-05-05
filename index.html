@@ -4,53 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amoira Command Center</title>
-    <!-- Tailwind CSS CDN untuk styling yang cepat dan rapi -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-900 text-slate-200 min-h-screen p-4 md:p-8 font-sans">
 
-    <!-- Container Utama -->
-    <div class="w-full max-w-md bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700">
-        <h1 class="text-2xl font-bold text-center mb-2 text-emerald-400">Command Center</h1>
-        <p class="text-center text-xs text-slate-400 mb-6">Financial Shield Monitoring</p>
-        
-        <!-- Status Koneksi -->
-        <div id="connection-status" class="text-center text-sm text-yellow-400 mb-4 animate-pulse">
-            Menghubungkan ke Firebase...
+    <div class="max-w-4xl mx-auto bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-emerald-500">Draft Planning: Mei 2026</h1>
+            <span class="px-3 py-1 bg-slate-700 text-sm rounded text-slate-300">Status: DRAFT</span>
         </div>
 
-        <!-- Dashboard UI (Disembunyikan sebelum terkoneksi) -->
-        <div id="dashboard" class="hidden space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            <!-- Card Dana Darurat -->
-            <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-emerald-500">
-                <p class="text-xs text-slate-300 uppercase tracking-wider mb-1">Status Dana Darurat</p>
-                <div class="flex justify-between items-end">
-                    <p class="text-2xl font-bold text-white" id="ef-amount">Rp 0</p>
-                    <p class="text-xs text-emerald-400 font-semibold">Protected</p>
+            <!-- Panel Istri -->
+            <div class="bg-slate-900 p-5 rounded border border-slate-700">
+                <h2 class="text-lg font-medium text-blue-400 mb-4">Alokasi Istri (Rp 5.500.000)</h2>
+                <div class="space-y-3" id="wife-form">
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Adik Istri</label>
+                        <input type="number" id="w-adik" value="1500000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Paylater (Limit 500k)</label>
+                        <input type="number" id="w-paylater" value="500000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Listrik</label>
+                        <input type="number" id="w-listrik" value="600000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Utilitas (WiFi, Air, IPL)</label>
+                        <input type="number" id="w-utilitas" value="560000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="pt-3 border-t border-slate-700 flex justify-between items-center">
+                        <label class="text-sm font-semibold text-slate-300">Sisa Bulanan</label>
+                        <span id="w-sisa" class="font-mono text-emerald-400">Rp 2.340.000</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Card Paylater Warning -->
-            <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-rose-500">
-                <p class="text-xs text-slate-300 uppercase tracking-wider mb-1">Total Paylater Terpakai</p>
-                <div class="flex justify-between items-end">
-                    <p class="text-2xl font-bold text-white" id="paylater-amount">Rp 0</p>
-                    <p class="text-xs text-rose-400 font-semibold">Limit: Rp 1.000.000</p>
+            <!-- Panel Amoira -->
+            <div class="bg-slate-900 p-5 rounded border border-slate-700">
+                <h2 class="text-lg font-medium text-emerald-400 mb-4">Alokasi Amoira (Rp 7.000.000)</h2>
+                <div class="space-y-3" id="husband-form">
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Dana Darurat</label>
+                        <input type="number" id="h-darurat" value="2000000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Tabungan Emas</label>
+                        <input type="number" id="h-emas" value="1500000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Paylater (Tagihan)</label>
+                        <input type="number" id="h-paylater" value="1300000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Kontrakan</label>
+                        <input type="number" id="h-kontrakan" value="1300000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-slate-400">Adik</label>
+                        <input type="number" id="h-adik" value="300000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="pt-3 border-t border-slate-700 flex justify-between items-center">
+                        <label class="text-sm font-semibold text-slate-300">Sisa Harian</label>
+                        <span id="h-sisa" class="font-mono text-emerald-400">Rp 600.000</span>
+                    </div>
                 </div>
             </div>
 
         </div>
+
+        <!-- Action Panel -->
+        <div class="mt-8 flex justify-end gap-4 border-t border-slate-700 pt-4">
+            <button id="btn-validate" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded transition text-sm">Validasi Kalkulasi</button>
+            <button id="btn-save" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded transition text-sm font-medium">Simpan Draft ke Database</button>
+        </div>
+        
+        <!-- Log Panel -->
+        <div id="system-log" class="mt-4 text-xs text-slate-500 font-mono hidden"></div>
+
     </div>
 
-    <!-- Firebase SDK Modular -->
     <script type="module">
-        // Import Core Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        // Import Firestore Database
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-        // Konfigurasi milik Amoira
         const firebaseConfig = {
             apiKey: "AIzaSyAh0vnMQcvRk0cQ9QdDLDto7eQbxANWYWY",
             authDomain: "amoira-command-center.firebaseapp.com",
@@ -60,30 +100,107 @@
             appId: "1:882649755031:web:fc58f60fa7b906991268d2"
         };
 
-        // Inisialisasi Aplikasi & Database
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Simulasi koneksi berhasil
-        try {
-            // Mengubah status UI jika tidak ada error saat inisialisasi
-            const statusEl = document.getElementById('connection-status');
-            statusEl.innerText = "Sistem Aktif & Terhubung!";
-            statusEl.classList.replace('text-yellow-400', 'text-emerald-400');
-            statusEl.classList.remove('animate-pulse');
+        // Core Configuration Variables
+        const WIFE_SALARY = 5500000;
+        const HUSBAND_SALARY = 7000000;
 
-            // Menampilkan Dashboard
-            document.getElementById('dashboard').classList.remove('hidden');
+        // Formatting Utility
+        const formatIDR = (number) => {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        };
 
-            // Nanti kita akan menarik data asli dari Firestore di sini
-            // Untuk sekarang, kita tampilkan angka statis dari alokasi
-            document.getElementById('ef-amount').innerText = "Rp 2.000.000";
+        // Calculation Logic
+        const calculateRemaining = () => {
+            // Calculate Wife
+            const wAdik = parseInt(document.getElementById('w-adik').value) || 0;
+            const wPaylater = parseInt(document.getElementById('w-paylater').value) || 0;
+            const wListrik = parseInt(document.getElementById('w-listrik').value) || 0;
+            const wUtilitas = parseInt(document.getElementById('w-utilitas').value) || 0;
             
-        } catch (error) {
-            console.error("Firebase connection error:", error);
-            document.getElementById('connection-status').innerText = "Gagal terhubung ke server.";
-            document.getElementById('connection-status').classList.replace('text-yellow-400', 'text-rose-500');
-        }
+            const wTotalUsed = wAdik + wPaylater + wListrik + wUtilitas;
+            const wRemaining = WIFE_SALARY - wTotalUsed;
+            
+            const wSisaEl = document.getElementById('w-sisa');
+            wSisaEl.innerText = formatIDR(wRemaining);
+            wSisaEl.className = wRemaining < 0 ? "font-mono text-rose-500" : "font-mono text-emerald-400";
+
+            // Calculate Husband
+            const hDarurat = parseInt(document.getElementById('h-darurat').value) || 0;
+            const hEmas = parseInt(document.getElementById('h-emas').value) || 0;
+            const hPaylater = parseInt(document.getElementById('h-paylater').value) || 0;
+            const hKontrakan = parseInt(document.getElementById('h-kontrakan').value) || 0;
+            const hAdik = parseInt(document.getElementById('h-adik').value) || 0;
+
+            const hTotalUsed = hDarurat + hEmas + hPaylater + hKontrakan + hAdik;
+            const hRemaining = HUSBAND_SALARY - hTotalUsed;
+
+            const hSisaEl = document.getElementById('h-sisa');
+            hSisaEl.innerText = formatIDR(hRemaining);
+            hSisaEl.className = hRemaining < 0 ? "font-mono text-rose-500" : "font-mono text-emerald-400";
+
+            return { wRemaining, hRemaining };
+        };
+
+        // Event Listeners for real-time calculation
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', calculateRemaining);
+        });
+
+        // Manual Validation Button
+        document.getElementById('btn-validate').addEventListener('click', () => {
+            calculateRemaining();
+            const logEl = document.getElementById('system-log');
+            logEl.classList.remove('hidden');
+            logEl.innerText = `[${new Date().toLocaleTimeString()}] Validation executed successfully.`;
+        });
+
+        // Save to Firestore Database
+        document.getElementById('btn-save').addEventListener('click', async () => {
+            const statusObj = calculateRemaining();
+            const logEl = document.getElementById('system-log');
+            logEl.classList.remove('hidden');
+            
+            if(statusObj.wRemaining < 0 || statusObj.hRemaining < 0) {
+                logEl.innerText = `[ERROR] Kalkulasi defisit. Sesuaikan angka sebelum menyimpan ke database.`;
+                logEl.classList.add('text-rose-500');
+                return;
+            }
+
+            try {
+                logEl.classList.remove('text-rose-500');
+                logEl.innerText = `[INFO] Mengirim data ke Firestore...`;
+                
+                // Menyimpan data draft ke collection "cycles" dengan ID bulan "05-2026"
+                await setDoc(doc(db, "cycles", "05-2026"), {
+                    status: "draft",
+                    updated_at: new Date(),
+                    wife_allocation: {
+                        adik: parseInt(document.getElementById('w-adik').value),
+                        paylater: parseInt(document.getElementById('w-paylater').value),
+                        listrik: parseInt(document.getElementById('w-listrik').value),
+                        utilitas: parseInt(document.getElementById('w-utilitas').value),
+                        sisa: statusObj.wRemaining
+                    },
+                    husband_allocation: {
+                        darurat: parseInt(document.getElementById('h-darurat').value),
+                        emas: parseInt(document.getElementById('h-emas').value),
+                        paylater: parseInt(document.getElementById('h-paylater').value),
+                        kontrakan: parseInt(document.getElementById('h-kontrakan').value),
+                        adik: parseInt(document.getElementById('h-adik').value),
+                        sisa: statusObj.hRemaining
+                    }
+                });
+
+                logEl.innerText = `[SUCCESS] Data draft Mei 2026 berhasil disimpan ke database.`;
+            } catch (error) {
+                console.error(error);
+                logEl.innerText = `[ERROR] Gagal menyimpan data: ${error.message}`;
+                logEl.classList.add('text-rose-500');
+            }
+        });
     </script>
 </body>
 </html>
