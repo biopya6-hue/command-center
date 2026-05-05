@@ -5,92 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amoira Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-900 text-slate-200 min-h-screen p-4 md:p-8 font-sans">
+<body class="bg-slate-900 text-slate-200 h-screen overflow-hidden flex flex-col font-sans relative">
 
-    <div class="max-w-4xl mx-auto bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-semibold text-emerald-500">Draft Planning: Mei 2026</h1>
-            <span class="px-3 py-1 bg-slate-700 text-sm rounded text-slate-300">Status: DRAFT</span>
-        </div>
+    <!-- Header -->
+    <header class="bg-slate-800 p-4 shadow-md border-b border-slate-700 flex justify-between items-center shrink-0">
+        <h1 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-shield-halved mr-2"></i>Command Center</h1>
+        <div id="connection-status" class="w-3 h-3 rounded-full bg-yellow-400 animate-pulse" title="Menghubungkan..."></div>
+    </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Panel Istri -->
-            <div class="bg-slate-900 p-5 rounded border border-slate-700">
-                <h2 class="text-lg font-medium text-blue-400 mb-4">Alokasi Istri (Rp 5.500.000)</h2>
-                <div class="space-y-3" id="wife-form">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Adik Istri</label>
-                        <input type="number" id="w-adik" value="1500000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Paylater (Limit 500k)</label>
-                        <input type="number" id="w-paylater" value="500000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Listrik</label>
-                        <input type="number" id="w-listrik" value="600000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Utilitas (WiFi, Air, IPL)</label>
-                        <input type="number" id="w-utilitas" value="560000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div class="pt-3 border-t border-slate-700 flex justify-between items-center">
-                        <label class="text-sm font-semibold text-slate-300">Sisa Bulanan</label>
-                        <span id="w-sisa" class="font-mono text-emerald-400">Rp 2.340.000</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Panel Amoira -->
-            <div class="bg-slate-900 p-5 rounded border border-slate-700">
-                <h2 class="text-lg font-medium text-emerald-400 mb-4">Alokasi Amoira (Rp 7.000.000)</h2>
-                <div class="space-y-3" id="husband-form">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Dana Darurat</label>
-                        <input type="number" id="h-darurat" value="2000000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Tabungan Emas</label>
-                        <input type="number" id="h-emas" value="1500000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Paylater (Tagihan)</label>
-                        <input type="number" id="h-paylater" value="1300000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Kontrakan</label>
-                        <input type="number" id="h-kontrakan" value="1300000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-slate-400">Adik</label>
-                        <input type="number" id="h-adik" value="300000" class="w-1/2 bg-slate-800 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="pt-3 border-t border-slate-700 flex justify-between items-center">
-                        <label class="text-sm font-semibold text-slate-300">Sisa Harian</label>
-                        <span id="h-sisa" class="font-mono text-emerald-400">Rp 600.000</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Action Panel -->
-        <div class="mt-8 flex justify-end gap-4 border-t border-slate-700 pt-4">
-            <button id="btn-validate" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded transition text-sm">Validasi Kalkulasi</button>
-            <button id="btn-save" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded transition text-sm font-medium">Simpan Draft ke Database</button>
-        </div>
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 pb-24 relative">
         
-        <!-- Log Panel -->
-        <div id="system-log" class="mt-4 text-xs text-slate-500 font-mono hidden"></div>
+        <!-- TAB 1: ACTIVE SHIELD -->
+        <section id="tab-active" class="block space-y-6">
+            <div class="flex justify-between items-end">
+                <div>
+                    <h2 class="text-lg font-semibold text-white">Active Shield</h2>
+                    <p class="text-xs text-slate-400" id="current-date-display">Bulan Berjalan</p>
+                </div>
+            </div>
 
+            <!-- Card Amoira -->
+            <div class="bg-slate-800 rounded-xl p-5 border-l-4 border-emerald-500 shadow-lg relative">
+                <h3 class="font-medium text-emerald-400 mb-4"><i class="fa-solid fa-user mr-2"></i>Amoira (Harian)</h3>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Sisa Kantong</p>
+                        <p class="text-lg font-bold text-white" id="active-h-sisa">Rp 600.000</p>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Jatah Hari Ini</p>
+                        <p class="text-lg font-bold text-emerald-400" id="active-h-jatah">Rp 0</p>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <p class="text-xs text-slate-400">Paylater Terpakai</p>
+                        <p class="text-xs font-semibold text-rose-400" id="active-h-paylater-txt">Rp 0 / 500k</p>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div class="bg-rose-500 h-2 rounded-full" id="active-h-paylater-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Istri -->
+            <div class="bg-slate-800 rounded-xl p-5 border-l-4 border-blue-500 shadow-lg">
+                <h3 class="font-medium text-blue-400 mb-4"><i class="fa-solid fa-user mr-2"></i>Istri (Bulanan)</h3>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Sisa Kantong</p>
+                        <p class="text-lg font-bold text-white" id="active-w-sisa">Rp 2.340.000</p>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Jatah Hari Ini</p>
+                        <p class="text-lg font-bold text-blue-400" id="active-w-jatah">Rp 0</p>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <p class="text-xs text-slate-400">Paylater Terpakai</p>
+                        <p class="text-xs font-semibold text-rose-400" id="active-w-paylater-txt">Rp 0 / 500k</p>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div class="bg-rose-500 h-2 rounded-full" id="active-w-paylater-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action: Tambah Penggunaan Paylater -->
+            <div class="flex gap-4">
+                <button onclick="openPaylaterModal('Amoira')" class="flex-1 bg-slate-800 border border-emerald-500/30 hover:bg-slate-700 text-emerald-400 py-3 rounded-xl text-sm font-medium transition"><i class="fa-solid fa-plus mr-2"></i>Paylater Amoira</button>
+                <button onclick="openPaylaterModal('Istri')" class="flex-1 bg-slate-800 border border-blue-500/30 hover:bg-slate-700 text-blue-400 py-3 rounded-xl text-sm font-medium transition"><i class="fa-solid fa-plus mr-2"></i>Paylater Istri</button>
+            </div>
+        </section>
+
+        <!-- TAB 2: STRATEGY BOARD (DRAFT) -->
+        <section id="tab-draft" class="hidden space-y-6">
+            <h2 class="text-lg font-semibold text-white">Draft Planning: Bulan Depan</h2>
+            
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <h3 class="text-sm font-medium text-emerald-400 mb-3 border-b border-slate-700 pb-2">Draft Amoira</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Darurat (Danamas)</label>
+                        <input type="number" id="d-h-darurat" value="2000000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Emas Anak</label>
+                        <input type="number" id="d-h-emas" value="1500000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Paylater</label>
+                        <input type="number" id="d-h-paylater" value="1300000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Kontrakan</label>
+                        <input type="number" id="d-h-kontrakan" value="1300000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Adik</label>
+                        <input type="number" id="d-h-adik" value="300000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <h3 class="text-sm font-medium text-blue-400 mb-3 border-b border-slate-700 pb-2">Draft Istri</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Adik Istri</label>
+                        <input type="number" id="d-w-adik" value="1500000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Paylater (Batas)</label>
+                        <input type="number" id="d-w-paylater" value="500000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Listrik</label>
+                        <input type="number" id="d-w-listrik" value="600000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs text-slate-400">Utilitas</label>
+                        <input type="number" id="d-w-utilitas" value="560000" class="w-1/2 bg-slate-900 border border-slate-600 rounded p-2 text-right text-sm focus:border-blue-500 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-save-draft" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition font-medium"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Simpan Draft ke Cloud</button>
+            <p id="draft-log" class="text-xs text-center text-slate-400 hidden"></p>
+        </section>
+
+    </main>
+
+    <!-- Modal Paylater (Hidden by default) -->
+    <div id="modal-paylater" class="hidden absolute inset-0 bg-slate-900/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-slate-800 w-full max-w-sm rounded-2xl p-6 border border-slate-700 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-2" id="modal-title">Input Paylater</h3>
+            <p class="text-xs text-slate-400 mb-4">Tambahkan penggunaan paylater baru. Ini akan mengurangi limit 500k.</p>
+            <input type="number" id="modal-input-amount" placeholder="Nominal (Cth: 50000)" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white mb-4 focus:border-rose-500 focus:outline-none">
+            <div class="flex gap-3">
+                <button onclick="closePaylaterModal()" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm">Batal</button>
+                <button onclick="savePaylater()" class="flex-1 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-sm font-medium">Catat Hutang</button>
+            </div>
+        </div>
     </div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bg-slate-800 border-t border-slate-700 shrink-0 absolute bottom-0 w-full flex justify-around p-2">
+        <button onclick="switchTab('active')" id="nav-active" class="flex flex-col items-center p-2 text-emerald-400 transition">
+            <i class="fa-solid fa-shield-halved text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Shield</span>
+        </button>
+        <button onclick="switchTab('draft')" id="nav-draft" class="flex flex-col items-center p-2 text-slate-500 hover:text-slate-300 transition">
+            <i class="fa-solid fa-chess-knight text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Draft</span>
+        </button>
+    </nav>
+
+    <!-- App Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
+        // Konfigurasi Firebase Amoira
         const firebaseConfig = {
             apiKey: "AIzaSyAh0vnMQcvRk0cQ9QdDLDto7eQbxANWYWY",
             authDomain: "amoira-command-center.firebaseapp.com",
@@ -103,104 +187,133 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Core Configuration Variables
-        const WIFE_SALARY = 5500000;
-        const HUSBAND_SALARY = 7000000;
+        // State & Variabel Sementara (Nanti diganti dengan fetch dari Firestore)
+        let currentPaylaterAmoira = 0;
+        let currentPaylaterIstri = 0;
+        const PAYLATER_LIMIT = 500000;
+        const SISA_AMOIRA = 600000;
+        const SISA_ISTRI = 2340000;
 
-        // Formatting Utility
-        const formatIDR = (number) => {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        let activeModalUser = '';
+
+        // Utilitas Format Uang
+        const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+
+        // Kalkulasi Hari & Jatah Harian
+        const calculateDaily = () => {
+            const today = new Date();
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const currentDay = today.getDate();
+            const remainingDays = (lastDay - currentDay) + 1; // Termasuk hari ini
+
+            document.getElementById('current-date-display').innerText = `${today.toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year:'numeric'})} (${remainingDays} hari tersisa)`;
+
+            // Hitung jatah harian
+            const jatahAmoira = Math.floor(SISA_AMOIRA / remainingDays);
+            const jatahIstri = Math.floor(SISA_ISTRI / remainingDays);
+
+            document.getElementById('active-h-jatah').innerText = formatIDR(jatahAmoira);
+            document.getElementById('active-w-jatah').innerText = formatIDR(jatahIstri);
         };
 
-        // Calculation Logic
-        const calculateRemaining = () => {
-            // Calculate Wife
-            const wAdik = parseInt(document.getElementById('w-adik').value) || 0;
-            const wPaylater = parseInt(document.getElementById('w-paylater').value) || 0;
-            const wListrik = parseInt(document.getElementById('w-listrik').value) || 0;
-            const wUtilitas = parseInt(document.getElementById('w-utilitas').value) || 0;
-            
-            const wTotalUsed = wAdik + wPaylater + wListrik + wUtilitas;
-            const wRemaining = WIFE_SALARY - wTotalUsed;
-            
-            const wSisaEl = document.getElementById('w-sisa');
-            wSisaEl.innerText = formatIDR(wRemaining);
-            wSisaEl.className = wRemaining < 0 ? "font-mono text-rose-500" : "font-mono text-emerald-400";
+        // Update Visual Progress Bar Paylater
+        const updatePaylaterUI = () => {
+            const percAmoira = Math.min((currentPaylaterAmoira / PAYLATER_LIMIT) * 100, 100);
+            document.getElementById('active-h-paylater-txt').innerText = `${formatIDR(currentPaylaterAmoira)} / 500k`;
+            document.getElementById('active-h-paylater-bar').style.width = `${percAmoira}%`;
 
-            // Calculate Husband
-            const hDarurat = parseInt(document.getElementById('h-darurat').value) || 0;
-            const hEmas = parseInt(document.getElementById('h-emas').value) || 0;
-            const hPaylater = parseInt(document.getElementById('h-paylater').value) || 0;
-            const hKontrakan = parseInt(document.getElementById('h-kontrakan').value) || 0;
-            const hAdik = parseInt(document.getElementById('h-adik').value) || 0;
-
-            const hTotalUsed = hDarurat + hEmas + hPaylater + hKontrakan + hAdik;
-            const hRemaining = HUSBAND_SALARY - hTotalUsed;
-
-            const hSisaEl = document.getElementById('h-sisa');
-            hSisaEl.innerText = formatIDR(hRemaining);
-            hSisaEl.className = hRemaining < 0 ? "font-mono text-rose-500" : "font-mono text-emerald-400";
-
-            return { wRemaining, hRemaining };
+            const percIstri = Math.min((currentPaylaterIstri / PAYLATER_LIMIT) * 100, 100);
+            document.getElementById('active-w-paylater-txt').innerText = `${formatIDR(currentPaylaterIstri)} / 500k`;
+            document.getElementById('active-w-paylater-bar').style.width = `${percAmoira}%`; // Fixed bug: percIstri
+            document.getElementById('active-w-paylater-bar').style.width = `${percIstri}%`;
         };
 
-        // Event Listeners for real-time calculation
-        document.querySelectorAll('input[type="number"]').forEach(input => {
-            input.addEventListener('input', calculateRemaining);
-        });
+        // Modal Functions (Harus diletakkan di window agar bisa dipanggil dari HTML inline onclick)
+        window.openPaylaterModal = (user) => {
+            activeModalUser = user;
+            document.getElementById('modal-title').innerText = `Input Paylater ${user}`;
+            document.getElementById('modal-input-amount').value = '';
+            document.getElementById('modal-paylater').classList.remove('hidden');
+        };
 
-        // Manual Validation Button
-        document.getElementById('btn-validate').addEventListener('click', () => {
-            calculateRemaining();
-            const logEl = document.getElementById('system-log');
-            logEl.classList.remove('hidden');
-            logEl.innerText = `[${new Date().toLocaleTimeString()}] Validation executed successfully.`;
-        });
+        window.closePaylaterModal = () => {
+            document.getElementById('modal-paylater').classList.add('hidden');
+        };
 
-        // Save to Firestore Database
-        document.getElementById('btn-save').addEventListener('click', async () => {
-            const statusObj = calculateRemaining();
-            const logEl = document.getElementById('system-log');
-            logEl.classList.remove('hidden');
-            
-            if(statusObj.wRemaining < 0 || statusObj.hRemaining < 0) {
-                logEl.innerText = `[ERROR] Kalkulasi defisit. Sesuaikan angka sebelum menyimpan ke database.`;
-                logEl.classList.add('text-rose-500');
-                return;
+        window.savePaylater = () => {
+            const amount = parseInt(document.getElementById('modal-input-amount').value) || 0;
+            if(amount > 0) {
+                if(activeModalUser === 'Amoira') currentPaylaterAmoira += amount;
+                if(activeModalUser === 'Istri') currentPaylaterIstri += amount;
+                updatePaylaterUI();
+                // TODO: Push ke Firestore di iterasi berikutnya
             }
+            closePaylaterModal();
+        };
+
+        // Tab Switching Logic
+        window.switchTab = (tabName) => {
+            const tActive = document.getElementById('tab-active');
+            const tDraft = document.getElementById('tab-draft');
+            const nActive = document.getElementById('nav-active');
+            const nDraft = document.getElementById('nav-draft');
+
+            if(tabName === 'active') {
+                tActive.classList.remove('hidden');
+                tDraft.classList.add('hidden');
+                nActive.classList.replace('text-slate-500', 'text-emerald-400');
+                nDraft.classList.replace('text-emerald-400', 'text-slate-500');
+            } else {
+                tActive.classList.add('hidden');
+                tDraft.classList.remove('hidden');
+                nDraft.classList.replace('text-slate-500', 'text-emerald-400');
+                nActive.classList.replace('text-emerald-400', 'text-slate-500');
+            }
+        };
+
+        // Simpan Draft ke Firestore
+        document.getElementById('btn-save-draft').addEventListener('click', async () => {
+            const logEl = document.getElementById('draft-log');
+            logEl.classList.remove('hidden');
+            logEl.innerText = 'Menyimpan...';
 
             try {
-                logEl.classList.remove('text-rose-500');
-                logEl.innerText = `[INFO] Mengirim data ke Firestore...`;
-                
-                // Menyimpan data draft ke collection "cycles" dengan ID bulan "05-2026"
-                await setDoc(doc(db, "cycles", "05-2026"), {
-                    status: "draft",
+                await setDoc(doc(db, "cycles", "draft-next-month"), {
                     updated_at: new Date(),
-                    wife_allocation: {
-                        adik: parseInt(document.getElementById('w-adik').value),
-                        paylater: parseInt(document.getElementById('w-paylater').value),
-                        listrik: parseInt(document.getElementById('w-listrik').value),
-                        utilitas: parseInt(document.getElementById('w-utilitas').value),
-                        sisa: statusObj.wRemaining
+                    amoira: {
+                        darurat: parseInt(document.getElementById('d-h-darurat').value),
+                        emas: parseInt(document.getElementById('d-h-emas').value),
+                        paylater: parseInt(document.getElementById('d-h-paylater').value),
+                        kontrakan: parseInt(document.getElementById('d-h-kontrakan').value),
+                        adik: parseInt(document.getElementById('d-h-adik').value),
                     },
-                    husband_allocation: {
-                        darurat: parseInt(document.getElementById('h-darurat').value),
-                        emas: parseInt(document.getElementById('h-emas').value),
-                        paylater: parseInt(document.getElementById('h-paylater').value),
-                        kontrakan: parseInt(document.getElementById('h-kontrakan').value),
-                        adik: parseInt(document.getElementById('h-adik').value),
-                        sisa: statusObj.hRemaining
+                    istri: {
+                        adik: parseInt(document.getElementById('d-w-adik').value),
+                        paylater: parseInt(document.getElementById('d-w-paylater').value),
+                        listrik: parseInt(document.getElementById('d-w-listrik').value),
+                        utilitas: parseInt(document.getElementById('d-w-utilitas').value),
                     }
                 });
-
-                logEl.innerText = `[SUCCESS] Data draft Mei 2026 berhasil disimpan ke database.`;
+                logEl.innerText = 'Draft berhasil disimpan ke Cloud!';
+                logEl.classList.replace('text-slate-400', 'text-emerald-400');
             } catch (error) {
                 console.error(error);
-                logEl.innerText = `[ERROR] Gagal menyimpan data: ${error.message}`;
-                logEl.classList.add('text-rose-500');
+                logEl.innerText = 'Gagal menyimpan draft.';
+                logEl.classList.replace('text-slate-400', 'text-rose-500');
             }
         });
+
+        // Initialize UI
+        try {
+            document.getElementById('connection-status').classList.replace('bg-yellow-400', 'bg-emerald-500');
+            document.getElementById('connection-status').classList.remove('animate-pulse');
+            document.getElementById('connection-status').title = "Terhubung";
+            calculateDaily();
+            updatePaylaterUI();
+        } catch (e) {
+            console.error("Inisialisasi UI gagal:", e);
+        }
+
     </script>
 </body>
 </html>
