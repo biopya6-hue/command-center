@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amoira Harmony v5.1</title>
+    <title>Amoira Harmony v7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,7 +16,7 @@
 
     <!-- Header -->
     <header class="bg-white px-6 py-5 shadow-sm flex justify-between items-center shrink-0 z-10 rounded-b-3xl">
-        <h1 class="text-xl font-extrabold text-[#3B7A72] tracking-wide"><i class="fa-solid fa-leaf mr-2 text-[#A14740]"></i>Harmony v5.1</h1>
+        <h1 class="text-xl font-extrabold text-[#3B7A72] tracking-wide"><i class="fa-solid fa-leaf mr-2 text-[#A14740]"></i>Harmony v7</h1>
         <div class="flex items-center bg-[#E5F2F0] px-3 py-1 rounded-full border border-[#BDE0DB]">
             <div id="sync-dot" class="w-2 h-2 rounded-full bg-[#3B7A72] animate-pulse mr-2"></div>
             <span id="sync-text" class="text-[10px] font-bold text-[#3B7A72] uppercase tracking-wider">Menghubungkan...</span>
@@ -29,11 +29,11 @@
         <!-- TAB 1: ACTIVE -->
         <section id="tab-active" class="block space-y-6">
             
-            <!-- Hero Card: Deep Pastel untuk Kontras -->
+            <!-- Hero Card: Deep Pastel -->
             <div class="bg-gradient-to-br from-[#4A8B82] to-[#6FAAA3] rounded-3xl p-6 shadow-lg shadow-[#4A8B82]/20 relative overflow-hidden text-white">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10"></div>
                 
-                <p class="text-[10px] font-bold tracking-wider uppercase mb-1 opacity-90" id="active-period">Bulan Berjalan</p>
+                <p class="text-[10px] font-bold tracking-wider uppercase mb-1 opacity-90" id="active-period">PERIODE: ...</p>
                 <p class="text-[10px] bg-white/20 inline-block px-2 py-1 rounded-md mb-4 backdrop-blur-sm font-semibold shadow-sm"><i class="fa-solid fa-piggy-bank mr-1"></i>Kantong Keluarga</p>
                 
                 <div class="flex justify-between items-end mb-2">
@@ -61,7 +61,7 @@
                     <h3 class="text-sm font-extrabold text-gray-700">Analitik Pengeluaran</h3>
                     <i class="fa-solid fa-chart-pie text-[#A14740]"></i>
                 </div>
-                <!-- Mockup Bar Chart dengan warna pastel tua -->
+                <!-- Mockup Bar Chart -->
                 <div class="flex items-end justify-between h-20 gap-2 mb-2">
                     <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#D17B74] h-[30%] rounded-t-md transition-all"></div></div>
                     <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#6B9E9E] h-[70%] rounded-t-md transition-all"></div></div>
@@ -99,13 +99,35 @@
         <section id="tab-draft" class="hidden space-y-6">
             <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                 <h2 class="text-lg font-extrabold text-[#3B7A72] mb-1">Perencanaan Bulan Depan</h2>
-                <p class="text-xs font-semibold text-gray-400 mb-6">Sesuaikan jika ada perubahan tagihan.</p>
-                <div class="space-y-4" id="draft-container">
-                    <!-- JS populate -->
+                <p class="text-[10px] font-bold tracking-wider uppercase mb-6 text-gray-500 bg-gray-100 inline-block px-2 py-1 rounded-md" id="draft-period-title">PERIODE: ...</p>
+                
+                <!-- VIEW MODE (Collapsed summary after saving) -->
+                <div id="draft-view-mode" class="hidden">
+                    <div class="bg-[#E5F2F0] p-6 rounded-2xl border border-[#BDE0DB] text-center shadow-sm">
+                        <i class="fa-solid fa-file-circle-check text-4xl text-[#3B7A72] mb-3"></i>
+                        <p class="text-sm font-extrabold text-[#3B7A72]">Planning <span id="draft-view-period">...</span> Tersimpan.</p>
+                        
+                        <div id="draft-edit-container" class="mt-4">
+                            <button onclick="window.editDraft()" class="text-xs font-extrabold text-[#3B7A72] bg-white hover:bg-gray-50 py-2.5 px-6 rounded-xl border border-[#BDE0DB] shadow-sm transition">Buka & Edit Draft</button>
+                            <p class="text-[10px] text-gray-500 mt-2 font-semibold">Tersedia sebelum tanggal 25</p>
+                        </div>
+                        
+                        <div id="draft-locked-container" class="mt-4 hidden">
+                            <p class="text-xs font-bold text-[#A14740] bg-[#FCE3E1] py-2 px-4 rounded-xl inline-block border border-[#F5C2C0]"><i class="fa-solid fa-lock mr-1"></i>Draft Terkunci (Lewat tgl 25)</p>
+                        </div>
+                    </div>
                 </div>
-                <button class="w-full mt-6 py-4 bg-[#4A8B82] hover:bg-[#3B7A72] text-white rounded-2xl transition font-bold shadow-md shadow-[#4A8B82]/30">
-                    <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Kunci Perencanaan
-                </button>
+
+                <!-- EDIT MODE (Full Page Form) -->
+                <div id="draft-edit-mode" class="hidden">
+                    <p class="text-xs font-semibold text-gray-400 mb-4">Sesuaikan jika ada perubahan tagihan.</p>
+                    <div class="space-y-4" id="draft-container">
+                        <!-- JS populate -->
+                    </div>
+                    <button onclick="window.saveDraft()" class="w-full mt-6 py-4 bg-[#4A8B82] hover:bg-[#3B7A72] text-white rounded-2xl transition font-bold shadow-md shadow-[#4A8B82]/30">
+                        <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Simpan Perencanaan
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -184,18 +206,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Dokumen target di Firestore
         const currentMonthDoc = "05-2026"; 
         const docRef = doc(db, "cycles", currentMonthDoc);
 
         const TOTAL_INCOME = 12500000;
         
-        // Data Default (Pastel Teks Tua & BG Terang untuk kontras maksimal)
+        // Data Default Active
         let fixedBills = [
             { id: 1, name: "Uang Adik Istri", amount: 1500000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]" },
             { id: 2, name: "Uang Adik Amoira", amount: 300000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]" },
-            { id: 3, name: "Dana Darurat", amount: 2000000, paid: false, date: null, icon: "fa-shield-heart", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 4, name: "Tabungan Anak", amount: 1500000, paid: false, date: null, icon: "fa-coins", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" },
+            { id: 3, name: "Dana Darurat", amount: 2000000, paid: false, date: null, icon: "fa-shield", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" }, // REVISI ICON
+            { id: 4, name: "Tabungan Anak", amount: 1500000, paid: false, date: null, icon: "fa-coins", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" }, // REVISI TEKS
             { id: 5, name: "Kontrakan", amount: 1300000, paid: false, date: null, icon: "fa-house", color: "text-[#7A4E7A]", bg: "bg-[#F0E6F0]" },
             { id: 6, name: "Listrik (Saran Awal)", amount: 500000, paid: false, date: null, icon: "fa-bolt", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
             { id: 7, name: "WiFi Internet", amount: 280000, paid: false, date: null, icon: "fa-wifi", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
@@ -204,33 +225,46 @@
         ];
 
         let recentSpending = [];
+        let draftBills = null; 
+        let draftUIState = 'view'; // 'view' or 'edit'
 
         const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
 
         const renderApp = () => {
+            // 1. Math Kalkulasi
             let totalBillsPaid = fixedBills.filter(b => b.paid).reduce((sum, b) => sum + b.amount, 0);
             let totalBillsUnpaid = fixedBills.filter(b => !b.paid).reduce((sum, b) => sum + b.amount, 0);
             let totalSpent = recentSpending.reduce((sum, s) => sum + s.amount, 0);
-            
             let saldoUtama = TOTAL_INCOME - totalBillsPaid - totalSpent;
             
-            const today = new Date();
-            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-            const remainingDays = (lastDay - today.getDate()) + 1;
+            // 2. Hitung Tanggal & Periode
+            const date = new Date();
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            const remainingDays = (lastDay - date.getDate()) + 1;
             
             let uangOperasionalAman = saldoUtama - totalBillsUnpaid;
             let jatahHarian = Math.floor(uangOperasionalAman / remainingDays);
 
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const currMonth = months[date.getMonth()];
+            const currYear = date.getFullYear();
+            const nextMonthDate = new Date(currYear, date.getMonth() + 1, 1);
+            const nextMonth = months[nextMonthDate.getMonth()];
+            const nextYear = nextMonthDate.getFullYear();
+
+            // Set UI Tab 1
             document.getElementById('saldo-utama').innerText = formatIDR(saldoUtama);
             document.getElementById('jatah-harian').innerText = jatahHarian > 0 ? formatIDR(jatahHarian) : "Rp 0";
             document.getElementById('sisa-hari').innerText = `${remainingDays} Hari`;
-            document.getElementById('active-period').innerText = `PERIODE: ${today.toLocaleDateString('id-ID', {month: 'long', year:'numeric'}).toUpperCase()}`;
+            document.getElementById('active-period').innerText = `PERIODE: ${currMonth.toUpperCase()} ${currYear}`;
 
+            // Set UI Tab 2 (Period Text)
+            document.getElementById('draft-period-title').innerText = `PERIODE: ${nextMonth.toUpperCase()} ${nextYear}`;
+            document.getElementById('draft-view-period').innerText = `${nextMonth} ${nextYear}`;
+
+            // 3. Render Daftar Bills Tab 1
             const billsContainer = document.getElementById('bills-container');
-            const draftContainer = document.getElementById('draft-container');
             billsContainer.innerHTML = '';
-            draftContainer.innerHTML = '';
-
             fixedBills.forEach(bill => {
                 const isPaidClass = bill.paid ? "bg-[#F8FAFC] border-gray-100 opacity-60" : "bg-white border-gray-100 shadow-sm";
                 const iconBg = bill.paid ? "bg-[#4A8B82] text-white" : `${bill.bg} ${bill.color}`;
@@ -250,15 +284,46 @@
                         ${actionBtn}
                     </div>
                 `;
-
-                draftContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
-                        <label class="text-xs font-bold text-gray-600 w-1/2">${bill.name}</label>
-                        <input type="number" value="${bill.amount}" class="w-1/2 bg-white border border-gray-200 rounded-lg p-2 text-right text-sm font-bold text-gray-800 outline-none focus:border-[#4A8B82]">
-                    </div>
-                `;
             });
 
+            // 4. Render Draft Logic (Tab 2)
+            const viewMode = document.getElementById('draft-view-mode');
+            const editMode = document.getElementById('draft-edit-mode');
+            const draftContainer = document.getElementById('draft-container');
+            
+            // Logic state toggle
+            if (draftBills === null || draftUIState === 'edit') {
+                viewMode.classList.add('hidden');
+                editMode.classList.remove('hidden');
+                
+                draftContainer.innerHTML = '';
+                // Gunakan draftBills jika ada, jika tidak gunakan fixedBills sbg template
+                let dataToRender = draftBills || fixedBills; 
+                
+                dataToRender.forEach(bill => {
+                    draftContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <label class="text-xs font-bold text-gray-600 w-1/2">${bill.name}</label>
+                            <input type="number" id="draft-input-${bill.id}" value="${bill.amount}" class="w-1/2 bg-white border border-gray-200 rounded-lg p-2 text-right text-sm font-bold text-gray-800 outline-none focus:border-[#4A8B82]">
+                        </div>
+                    `;
+                });
+            } else {
+                // Draft tersimpan -> View Mode ringkas
+                viewMode.classList.remove('hidden');
+                editMode.classList.add('hidden');
+                
+                // Conditional UI Edit/Lock
+                if (date.getDate() < 25) {
+                    document.getElementById('draft-edit-container').classList.remove('hidden');
+                    document.getElementById('draft-locked-container').classList.add('hidden');
+                } else {
+                    document.getElementById('draft-edit-container').classList.add('hidden');
+                    document.getElementById('draft-locked-container').classList.remove('hidden');
+                }
+            }
+
+            // 5. Render Recent Spending
             const spendContainer = document.getElementById('spending-list');
             if (recentSpending.length === 0) {
                 spendContainer.innerHTML = `<p class="text-center text-xs font-semibold text-gray-400 italic mt-6" id="empty-state">Belum ada pengeluaran hari ini.</p>`;
@@ -290,8 +355,11 @@
                     const data = docSnap.data();
                     if(data.fixedBills) fixedBills = data.fixedBills;
                     if(data.recentSpending) recentSpending = data.recentSpending;
+                    if(data.draftBills) {
+                        draftBills = data.draftBills;
+                        draftUIState = 'view'; // Pastikan form mengecil saat load jika ada data
+                    }
                 } else {
-                    // Buat dokumen pertama kali jika belum ada
                     await setDoc(docRef, { fixedBills, recentSpending });
                 }
                 document.getElementById('sync-text').innerText = "Tersinkronisasi";
@@ -310,7 +378,7 @@
                 bill.paid = true;
                 const d = new Date();
                 bill.date = `${d.getDate()} ${d.toLocaleString('id-ID', {month:'short'})}`;
-                renderApp(); // Update UI langsung agar tidak terasa lag
+                renderApp(); 
                 try {
                     await updateDoc(docRef, { fixedBills });
                 } catch (e) {
@@ -329,7 +397,7 @@
                 const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
                 
                 recentSpending.push({ amount, cat, desc, time: timeStr });
-                renderApp(); // Update UI langsung
+                renderApp(); 
                 closeSpendingModal();
 
                 try {
@@ -340,7 +408,35 @@
             }
         };
 
-        // Modal Handlers
+        // --- DRAFT ACTIONS ---
+        window.editDraft = () => {
+            draftUIState = 'edit';
+            renderApp();
+        };
+
+        window.saveDraft = async () => {
+            // Tangkap nilai dari input form
+            let updatedDraft = (draftBills || fixedBills).map(bill => {
+                let inputEl = document.getElementById(`draft-input-${bill.id}`);
+                return {
+                    ...bill,
+                    amount: inputEl ? (parseInt(inputEl.value) || 0) : bill.amount
+                };
+            });
+
+            draftBills = updatedDraft;
+            draftUIState = 'view'; // Tutup form setelah simpan
+            renderApp(); 
+
+            try {
+                // Simpan draft untuk bulan depan ke dokumen bulan ini (bisa dipisah nanti jika sistem ganti bulan)
+                await updateDoc(docRef, { draftBills });
+            } catch (e) {
+                console.error("Gagal kirim draft ke Firestore", e);
+            }
+        };
+
+        // --- MODAL & TAB HANDLERS ---
         window.openSpendingModal = () => {
             document.getElementById('modal-amount').value = '';
             document.getElementById('modal-desc').value = '';
@@ -348,7 +444,6 @@
         };
         window.closeSpendingModal = () => { document.getElementById('modal-spending').classList.add('hidden'); };
 
-        // Tab Switcher
         window.switchTab = (tabName) => {
             const tActive = document.getElementById('tab-active');
             const tDraft = document.getElementById('tab-draft');
@@ -366,7 +461,7 @@
             }
         };
 
-        // Initialize Data From Cloud
+        // Boot
         syncDataFromCloud();
 
     </script>
