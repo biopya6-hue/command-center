@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amoira Command Center</title>
+    <!-- Tailwind CSS CDN untuk styling yang cepat dan rapi -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <!-- Container Utama -->
+    <div class="w-full max-w-md bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700">
+        <h1 class="text-2xl font-bold text-center mb-2 text-emerald-400">Command Center</h1>
+        <p class="text-center text-xs text-slate-400 mb-6">Financial Shield Monitoring</p>
+        
+        <!-- Status Koneksi -->
+        <div id="connection-status" class="text-center text-sm text-yellow-400 mb-4 animate-pulse">
+            Menghubungkan ke Firebase...
+        </div>
+
+        <!-- Dashboard UI (Disembunyikan sebelum terkoneksi) -->
+        <div id="dashboard" class="hidden space-y-4">
+            
+            <!-- Card Dana Darurat -->
+            <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-emerald-500">
+                <p class="text-xs text-slate-300 uppercase tracking-wider mb-1">Status Dana Darurat</p>
+                <div class="flex justify-between items-end">
+                    <p class="text-2xl font-bold text-white" id="ef-amount">Rp 0</p>
+                    <p class="text-xs text-emerald-400 font-semibold">Protected</p>
+                </div>
+            </div>
+
+            <!-- Card Paylater Warning -->
+            <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-rose-500">
+                <p class="text-xs text-slate-300 uppercase tracking-wider mb-1">Total Paylater Terpakai</p>
+                <div class="flex justify-between items-end">
+                    <p class="text-2xl font-bold text-white" id="paylater-amount">Rp 0</p>
+                    <p class="text-xs text-rose-400 font-semibold">Limit: Rp 1.000.000</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Firebase SDK Modular -->
+    <script type="module">
+        // Import Core Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        // Import Firestore Database
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+        // Konfigurasi milik Amoira
+        const firebaseConfig = {
+            apiKey: "AIzaSyAh0vnMQcvRk0cQ9QdDLDto7eQbxANWYWY",
+            authDomain: "amoira-command-center.firebaseapp.com",
+            projectId: "amoira-command-center",
+            storageBucket: "amoira-command-center.firebasestorage.app",
+            messagingSenderId: "882649755031",
+            appId: "1:882649755031:web:fc58f60fa7b906991268d2"
+        };
+
+        // Inisialisasi Aplikasi & Database
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Simulasi koneksi berhasil
+        try {
+            // Mengubah status UI jika tidak ada error saat inisialisasi
+            const statusEl = document.getElementById('connection-status');
+            statusEl.innerText = "Sistem Aktif & Terhubung!";
+            statusEl.classList.replace('text-yellow-400', 'text-emerald-400');
+            statusEl.classList.remove('animate-pulse');
+
+            // Menampilkan Dashboard
+            document.getElementById('dashboard').classList.remove('hidden');
+
+            // Nanti kita akan menarik data asli dari Firestore di sini
+            // Untuk sekarang, kita tampilkan angka statis dari alokasi
+            document.getElementById('ef-amount').innerText = "Rp 2.000.000";
+            
+        } catch (error) {
+            console.error("Firebase connection error:", error);
+            document.getElementById('connection-status').innerText = "Gagal terhubung ke server.";
+            document.getElementById('connection-status').classList.replace('text-yellow-400', 'text-rose-500');
+        }
+    </script>
+</body>
+</html>
