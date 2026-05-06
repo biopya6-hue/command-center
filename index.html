@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amoira Harmony v9</title>
+    <title>Amoira Harmony v10</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -24,7 +24,7 @@
 
     <!-- Header -->
     <header class="bg-white px-6 py-5 shadow-sm flex justify-between items-center shrink-0 z-10 rounded-b-3xl">
-        <h1 class="text-xl font-extrabold text-[#3B7A72] tracking-wide"><i class="fa-solid fa-leaf mr-2 text-[#A14740]"></i>Harmony v9</h1>
+        <h1 class="text-xl font-extrabold text-[#3B7A72] tracking-wide"><i class="fa-solid fa-leaf mr-2 text-[#A14740]"></i>Harmony v10</h1>
         <div class="flex items-center bg-[#E5F2F0] px-3 py-1 rounded-full border border-[#BDE0DB]">
             <div id="sync-dot" class="w-2 h-2 rounded-full bg-[#3B7A72] animate-pulse mr-2"></div>
             <span id="sync-text" class="text-[10px] font-bold text-[#3B7A72] uppercase tracking-wider">Menghubungkan...</span>
@@ -164,7 +164,7 @@
         <i class="fa-solid fa-plus"></i>
     </button>
 
-    <!-- Modal Input Spending (VERTICAL LAYOUT) -->
+    <!-- Modal Input Spending -->
     <div id="modal-spending" class="hidden absolute inset-0 bg-gray-900/60 z-50 flex items-end justify-center backdrop-blur-sm transition-opacity">
         <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl overflow-y-auto max-h-[90vh] hide-scrollbar">
             <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
@@ -172,19 +172,14 @@
             <input type="hidden" id="modal-edit-id" value="">
             
             <div class="space-y-5 mb-8">
-                <!-- Vertical Layout: Tanggal -->
                 <div>
                     <label class="text-[10px] font-extrabold text-gray-500 mb-2 block uppercase tracking-wider"><i class="fa-regular fa-calendar mr-1"></i>Tanggal Transaksi</label>
                     <input type="date" id="modal-date" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-sm font-bold text-gray-700 focus:border-[#4A8B82] outline-none transition">
                 </div>
-                
-                <!-- Vertical Layout: Nominal -->
                 <div>
                     <label class="text-[10px] font-extrabold text-gray-500 mb-2 block uppercase tracking-wider"><i class="fa-solid fa-money-bill-wave mr-1"></i>Nominal (Rp)</label>
                     <input type="number" id="modal-amount" placeholder="0" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-4 text-2xl font-black text-gray-700 focus:border-[#4A8B82] outline-none transition">
                 </div>
-
-                <!-- 7 Categories -->
                 <div>
                     <label class="text-[10px] font-extrabold text-gray-500 mb-2 block uppercase tracking-wider">Kategori (Simple 7)</label>
                     <div class="flex flex-wrap gap-2 mb-3">
@@ -228,12 +223,12 @@
         </div>
     </div>
 
-    <!-- Modal Lihat Semua Transaksi (Pop up lengkap) -->
+    <!-- Modal Lihat Semua Transaksi -->
     <div id="modal-see-all" class="hidden absolute inset-0 bg-gray-900/60 z-40 flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-[#F8FAFC] w-full max-w-md h-[80vh] rounded-3xl shadow-2xl flex flex-col relative overflow-hidden">
             <div class="bg-white p-5 border-b border-gray-100 flex justify-between items-center shrink-0">
                 <h3 class="text-md font-extrabold text-gray-800" id="see-all-title">Semua Transaksi</h3>
-                <button onclick="closeSeeAllModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition"><i class="fa-solid fa-times"></i></button>
+                <button onclick="closeSeeAllModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto p-5 hide-scrollbar space-y-1" id="modal-see-all-list">
                 <!-- JS Populate Full List -->
@@ -248,8 +243,8 @@
             <h3 class="text-lg font-extrabold text-gray-800 mb-2">Hapus Transaksi?</h3>
             <p class="text-xs text-gray-500 font-semibold mb-6">Yakin hapus transaksi ini? Saldo Utama dan Grafik akan dihitung ulang secara otomatis.</p>
             <div class="flex gap-3">
-                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-extrabold">Batal</button>
-                <button onclick="executeDelete()" class="flex-1 py-3 bg-[#A14740] text-white rounded-xl text-sm font-extrabold shadow-md shadow-[#A14740]/30">Ya, Hapus</button>
+                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-extrabold transition">Batal</button>
+                <button onclick="executeDelete()" class="flex-1 py-3 bg-[#A14740] text-white rounded-xl text-sm font-extrabold shadow-md shadow-[#A14740]/30 transition">Ya, Hapus</button>
             </div>
         </div>
     </div>
@@ -285,21 +280,23 @@
         const db = getFirestore(app);
         const docRef = doc(db, "cycles", "05-2026");
 
-        // Constants & State
         const TOTAL_INCOME = 12500000;
         const LIMIT_PAYLATER = 1000000;
         
+        // V10: Updated Structure w/ Categories & Show/Hide Flags
         let fixedBills = [
-            { id: 1, name: "Uang Adik Istri", amount: 1500000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]" },
-            { id: 2, name: "Uang Adik Amoira", amount: 300000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]" },
-            { id: 3, name: "Dana Darurat", amount: 2000000, paid: false, date: null, icon: "fa-shield", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 4, name: "Tabungan Anak", amount: 1500000, paid: false, date: null, icon: "fa-coins", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" },
-            { id: 5, name: "Kontrakan", amount: 1300000, paid: false, date: null, icon: "fa-house", color: "text-[#7A4E7A]", bg: "bg-[#F0E6F0]" },
-            { id: 6, name: "Listrik (Saran Awal)", amount: 500000, paid: false, date: null, icon: "fa-bolt", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 7, name: "WiFi Internet", amount: 280000, paid: false, date: null, icon: "fa-wifi", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 8, name: "PDAM / Air", amount: 150000, paid: false, date: null, icon: "fa-droplet", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 9, name: "IPL", amount: 130000, paid: false, date: null, icon: "fa-building", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 10, name: "Alokasi Paylater", amount: 1000000, paid: false, date: null, icon: "fa-credit-card", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" }
+            { id: 1, name: "Uang Adik Istri", amount: 1500000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]", cat: "Lainnya", showInActive: true, showInDraft: true },
+            { id: 2, name: "Uang Adik Amoira", amount: 300000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]", cat: "Lainnya", showInActive: true, showInDraft: true },
+            { id: 3, name: "Dana Darurat", amount: 2000000, paid: false, date: null, icon: "fa-shield", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]", cat: "Tabungan", showInActive: true, showInDraft: true },
+            { id: 4, name: "Tabungan Anak", amount: 1500000, paid: false, date: null, icon: "fa-coins", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]", cat: "Tabungan", showInActive: true, showInDraft: true },
+            { id: 5, name: "Kontrakan", amount: 1300000, paid: false, date: null, icon: "fa-house", color: "text-[#7A4E7A]", bg: "bg-[#F0E6F0]", cat: "Tagihan", showInActive: true, showInDraft: true },
+            { id: 6, name: "Listrik (Saran Awal)", amount: 500000, paid: false, date: null, icon: "fa-bolt", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]", cat: "Tagihan", showInActive: true, showInDraft: true },
+            { id: 7, name: "WiFi Internet", amount: 280000, paid: false, date: null, icon: "fa-wifi", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]", cat: "Tagihan", showInActive: true, showInDraft: true },
+            { id: 8, name: "PDAM / Air", amount: 150000, paid: false, date: null, icon: "fa-droplet", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]", cat: "Tagihan", showInActive: true, showInDraft: true },
+            { id: 9, name: "IPL", amount: 130000, paid: false, date: null, icon: "fa-building", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]", cat: "Tagihan", showInActive: true, showInDraft: true },
+            { id: 10, name: "Alokasi Paylater", amount: 1000000, paid: false, date: null, icon: "fa-credit-card", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]", cat: "Tagihan", showInActive: false, showInDraft: true },
+            { id: 11, name: "Tagihan Paylater Amoira", amount: 1300000, paid: false, date: null, icon: "fa-credit-card", color: "text-[#A14740]", bg: "bg-[#FCE3E1]", cat: "Tagihan", showInActive: true, showInDraft: false },
+            { id: 12, name: "Tagihan Paylater Istri", amount: 500000, paid: false, date: null, icon: "fa-credit-card", color: "text-[#A14740]", bg: "bg-[#FCE3E1]", cat: "Tagihan", showInActive: true, showInDraft: false }
         ];
 
         let recentSpending = [];
@@ -372,15 +369,10 @@
             document.getElementById('calendar-title').innerText = `Kalender ${monthNames[m]} ${y}`;
         };
 
-        window.toggleDateFilter = (dateStr) => {
-            filterDate = (filterDate === dateStr) ? null : dateStr;
-            renderApp();
-        };
-
+        window.toggleDateFilter = (dateStr) => { filterDate = (filterDate === dateStr) ? null : dateStr; renderApp(); };
         window.clearDateFilter = () => { filterDate = null; renderApp(); };
         window.handleSearch = () => { searchQuery = document.getElementById('search-input').value.toLowerCase(); renderApp(); };
 
-        // Helper untuk render 1 item spending HTML
         const createSpendingHTML = (spend) => {
             let icon = ''; let bgCat = ''; let txtCat = catColors[spend.cat] || '#CBD5E1';
             if(spend.cat === 'Makan Minum') { icon='fa-burger'; bgCat='bg-[#FCE3E1]'; }
@@ -412,21 +404,20 @@
         };
 
         const renderApp = () => {
-            // Kalkulasi Saldo
-            let totalBillsPaid = fixedBills.filter(b => b.paid).reduce((sum, b) => sum + b.amount, 0);
-            let totalBillsUnpaid = fixedBills.filter(b => !b.paid && b.id !== 10).reduce((sum, b) => sum + b.amount, 0); 
-            
+            // Kalkulasi Saldo V10 (Formula baru untuk menghindari double subtraction)
+            let oldTotalBillsPaid = fixedBills.filter(b => b.paid && !b.linkedTrxId).reduce((sum, b) => sum + b.amount, 0); // Legacy check
             let spentCash = recentSpending.filter(s => s.cat !== 'Paylater').reduce((sum, s) => sum + s.amount, 0);
             let spentPaylater = recentSpending.filter(s => s.cat === 'Paylater').reduce((sum, s) => sum + s.amount, 0);
             
-            let saldoUtama = TOTAL_INCOME - totalBillsPaid - spentCash;
+            let saldoUtama = TOTAL_INCOME - oldTotalBillsPaid - spentCash;
             let saldoPaylater = LIMIT_PAYLATER - spentPaylater;
+
+            let totalBillsUnpaid = fixedBills.filter(b => b.showInActive && !b.paid).reduce((sum, b) => sum + b.amount, 0); 
+            let uangOperasionalAman = saldoUtama - totalBillsUnpaid;
 
             const today = new Date();
             const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
             const remainingDays = (lastDay - today.getDate()) + 1;
-            
-            let uangOperasionalAman = saldoUtama - totalBillsUnpaid;
             let jatahHarian = Math.floor(uangOperasionalAman / remainingDays);
 
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -437,20 +428,21 @@
             document.getElementById('sisa-hari').innerText = `${remainingDays} Hari`;
             document.getElementById('active-period').innerText = `PERIODE: ${months[today.getMonth()].toUpperCase()} ${today.getFullYear()}`;
 
-            // Tab 2 Label
             const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
             document.getElementById('draft-period-title').innerText = `PERIODE: ${months[nextMonthDate.getMonth()].toUpperCase()} ${nextMonthDate.getFullYear()}`;
             document.getElementById('draft-view-period').innerText = `${months[nextMonthDate.getMonth()]} ${nextMonthDate.getFullYear()}`;
 
-            // Render Bills
+            // Render Bills (Active Tab)
             const billsContainer = document.getElementById('bills-container');
             billsContainer.innerHTML = '';
-            fixedBills.forEach(bill => {
-                if(bill.id === 10) return; // Hide Paylater alloc
+            fixedBills.filter(b => b.showInActive).forEach(bill => {
                 const isPaidClass = bill.paid ? "bg-[#F8FAFC] border-gray-100 opacity-60" : "bg-white border-gray-100 shadow-sm";
                 const iconBg = bill.paid ? "bg-[#4A8B82] text-white" : `${bill.bg} ${bill.color}`;
                 const actionBtn = bill.paid 
-                    ? `<span class="text-[10px] font-extrabold text-[#3B7A72] bg-[#E5F2F0] px-2 py-1 rounded-md"><i class="fa-solid fa-check mr-1"></i>${bill.date}</span>`
+                    ? `<div class="flex items-center gap-2">
+                           <span class="text-[10px] font-extrabold text-[#3B7A72] bg-[#E5F2F0] px-2 py-1 rounded-md"><i class="fa-solid fa-check mr-1"></i>${bill.date}</span>
+                           <button onclick="window.cancelBill(${bill.id})" class="w-6 h-6 bg-gray-100 hover:bg-[#FCE3E1] text-gray-400 hover:text-[#A14740] rounded-md flex items-center justify-center transition" title="Batal Bayar"><i class="fa-solid fa-rotate-left text-[10px]"></i></button>
+                       </div>`
                     : `<button onclick="window.payBill(${bill.id})" class="text-xs font-bold text-gray-500 bg-gray-100 hover:bg-[#4A8B82] hover:text-white px-3 py-1.5 rounded-lg transition">Bayar</button>`;
 
                 billsContainer.innerHTML += `
@@ -467,7 +459,7 @@
                 `;
             });
 
-            // Render Draft Logic
+            // Render Draft Logic (Tab 2)
             const viewMode = document.getElementById('draft-view-mode');
             const editMode = document.getElementById('draft-edit-mode');
             const draftContainer = document.getElementById('draft-container');
@@ -475,7 +467,7 @@
             if (draftBills === null || draftUIState === 'edit') {
                 viewMode.classList.add('hidden'); editMode.classList.remove('hidden');
                 draftContainer.innerHTML = '';
-                let dataToRender = draftBills || fixedBills; 
+                let dataToRender = draftBills || fixedBills.filter(b => b.showInDraft); 
                 
                 dataToRender.forEach(bill => {
                     draftContainer.innerHTML += `
@@ -496,14 +488,13 @@
                 }
             }
 
-            // FILTER & SEARCH LOGIC
+            // Render Spending List
             const spendContainer = document.getElementById('spending-list');
             const btnClearFilter = document.getElementById('btn-clear-filter');
             const btnSeeAllCont = document.getElementById('btn-see-all-container');
             
-            let filteredSpending = [...recentSpending].reverse(); // newest first
+            let filteredSpending = [...recentSpending].reverse(); 
             
-            // 1. Date Filter
             if(filterDate) {
                 filteredSpending = filteredSpending.filter(s => s.date === filterDate);
                 document.getElementById('spending-list-title').innerHTML = `Aktivitas <span class="text-[#A14740] bg-[#FCE3E1] px-2 py-0.5 rounded ml-1 text-xs">${filterDate}</span>`;
@@ -513,37 +504,24 @@
                 btnClearFilter.classList.add('hidden');
             }
 
-            // 2. Search Manual Filter
             if(searchQuery) {
-                filteredSpending = filteredSpending.filter(s => 
-                    (s.desc && s.desc.toLowerCase().includes(searchQuery)) || 
-                    s.cat.toLowerCase().includes(searchQuery)
-                );
+                filteredSpending = filteredSpending.filter(s => (s.desc && s.desc.toLowerCase().includes(searchQuery)) || s.cat.toLowerCase().includes(searchQuery));
             }
 
-            currentFilteredData = filteredSpending; // Simpan ke state untuk Modal Lihat Semua
+            currentFilteredData = filteredSpending; 
 
             if (filteredSpending.length === 0) {
                 spendContainer.innerHTML = `<p class="text-center text-xs font-semibold text-gray-400 italic mt-6">Belum ada aktivitas dicatat.</p>`;
                 btnSeeAllCont.classList.add('hidden');
             } else {
                 spendContainer.innerHTML = '';
-                // Hanya render Max 5
                 const displayData = filteredSpending.slice(0, 5);
-                displayData.forEach(spend => {
-                    spendContainer.innerHTML += createSpendingHTML(spend);
-                });
-
-                // Tampilkan tombol lihat semua jika data > 5
-                if(filteredSpending.length > 5) {
-                    btnSeeAllCont.classList.remove('hidden');
-                } else {
-                    btnSeeAllCont.classList.add('hidden');
-                }
+                displayData.forEach(spend => { spendContainer.innerHTML += createSpendingHTML(spend); });
+                if(filteredSpending.length > 5) btnSeeAllCont.classList.remove('hidden');
+                else btnSeeAllCont.classList.add('hidden');
             }
 
-            renderChart();
-            renderCalendar();
+            renderChart(); renderCalendar();
         };
 
         // --- FIREBASE SYNC ---
@@ -552,7 +530,14 @@
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if(data.fixedBills) fixedBills = data.fixedBills;
+                    
+                    // Merge cloud data to retain new struct (showInActive/Draft)
+                    if(data.fixedBills) {
+                        fixedBills = fixedBills.map(base => {
+                            const cloud = data.fixedBills.find(b => b.id === base.id);
+                            return cloud ? { ...base, ...cloud } : base;
+                        });
+                    }
                     if(data.recentSpending) recentSpending = data.recentSpending;
                     if(data.draftBills) { draftBills = data.draftBills; draftUIState = 'view'; }
                 } else {
@@ -560,7 +545,6 @@
                 }
                 
                 recentSpending = recentSpending.map((s, i) => { if(!s.id) s.id = Date.now() + i; return s; });
-                
                 document.getElementById('sync-text').innerText = "Tersinkronisasi";
                 document.getElementById('sync-dot').classList.remove('animate-pulse');
                 renderApp();
@@ -571,13 +555,40 @@
             }
         }
 
+        // --- BILLS AUTO-TRANSACTION ---
         window.payBill = async (id) => {
             let bill = fixedBills.find(b => b.id === id);
-            if(bill) {
+            if(bill && !bill.paid) {
                 bill.paid = true;
-                const d = new Date(); bill.date = `${d.getDate()} ${d.toLocaleString('id-ID', {month:'short'})}`;
+                const d = new Date(); 
+                const dateStr = d.toISOString().split('T')[0];
+                const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+                
+                bill.date = `${d.getDate()} ${d.toLocaleString('id-ID', {month:'short'})}`;
+                
+                const newTrxId = Date.now();
+                bill.linkedTrxId = newTrxId;
+                
+                recentSpending.push({ id: newTrxId, amount: bill.amount, cat: bill.cat, desc: `[Sistem] Pelunasan ${bill.name}`, date: dateStr, time: timeStr });
+                
                 renderApp(); 
-                try { await updateDoc(docRef, { fixedBills }); } catch (e) { console.error(e); }
+                try { await updateDoc(docRef, { fixedBills, recentSpending }); } catch (e) { console.error(e); }
+            }
+        };
+
+        window.cancelBill = async (id) => {
+            let bill = fixedBills.find(b => b.id === id);
+            if(bill && bill.paid) {
+                bill.paid = false;
+                bill.date = null;
+                
+                if(bill.linkedTrxId) {
+                    recentSpending = recentSpending.filter(s => s.id !== bill.linkedTrxId);
+                    bill.linkedTrxId = null;
+                }
+                
+                renderApp();
+                try { await updateDoc(docRef, { fixedBills, recentSpending }); } catch (e) { console.error(e); }
             }
         };
 
@@ -592,7 +603,6 @@
             document.getElementById('modal-date').value = todayStr;
             document.getElementById('modal-date').setAttribute("min", "2026-01-01");
             document.getElementById('modal-date').setAttribute("max", "2026-12-31");
-
             document.getElementById('modal-spending').classList.remove('hidden');
         };
 
@@ -609,7 +619,7 @@
             
             document.querySelector(`input[name="category"][value="${spend.cat}"]`).checked = true;
             document.getElementById('modal-spending').classList.remove('hidden');
-            window.closeSeeAllModal(); // Tutup pop up lihat semua jika sedang edit dari sana
+            window.closeSeeAllModal(); 
         };
 
         window.saveSpending = async () => {
@@ -625,17 +635,22 @@
                 
                 if(idVal) { 
                     const idx = recentSpending.findIndex(s => s.id === parseInt(idVal));
-                    if(idx !== -1) recentSpending[idx] = { id: parseInt(idVal), amount, cat, desc, date: dateStr, time: timeStr };
+                    if(idx !== -1) {
+                        recentSpending[idx] = { id: parseInt(idVal), amount, cat, desc, date: dateStr, time: timeStr };
+                        // Cek jika ini transaksi dari sistem tagihan
+                        const bill = fixedBills.find(b => b.linkedTrxId === parseInt(idVal));
+                        if(bill) { bill.amount = amount; } // Sinkronkan nominal jika diubah manual
+                    }
                 } else { 
                     recentSpending.push({ id: Date.now(), amount, cat, desc, date: dateStr, time: timeStr });
                 }
 
                 renderApp(); closeSpendingModal();
-                try { await updateDoc(docRef, { recentSpending }); } catch (e) { console.error(e); }
+                try { await updateDoc(docRef, { recentSpending, fixedBills }); } catch (e) { console.error(e); }
             }
         };
 
-        // --- SEE ALL MODAL LOGIC ---
+        // --- SEE ALL MODAL ---
         window.openSeeAllModal = () => {
             const listContainer = document.getElementById('modal-see-all-list');
             listContainer.innerHTML = '';
@@ -645,39 +660,36 @@
             if(searchQuery) title += ` (${searchQuery})`;
             document.getElementById('see-all-title').innerText = title;
 
-            currentFilteredData.forEach(spend => {
-                listContainer.innerHTML += createSpendingHTML(spend);
-            });
+            currentFilteredData.forEach(spend => { listContainer.innerHTML += createSpendingHTML(spend); });
             document.getElementById('modal-see-all').classList.remove('hidden');
         };
         window.closeSeeAllModal = () => { document.getElementById('modal-see-all').classList.add('hidden'); };
 
-        // --- DELETE LOGIC ---
-        window.confirmDelete = (id) => {
-            deleteTargetId = id;
-            document.getElementById('modal-delete').classList.remove('hidden');
-        };
-        window.closeDeleteModal = () => {
-            deleteTargetId = null;
-            document.getElementById('modal-delete').classList.add('hidden');
-        };
+        // --- DELETE ---
+        window.confirmDelete = (id) => { deleteTargetId = id; document.getElementById('modal-delete').classList.remove('hidden'); };
+        window.closeDeleteModal = () => { deleteTargetId = null; document.getElementById('modal-delete').classList.add('hidden'); };
         window.executeDelete = async () => {
             if(deleteTargetId) {
-                recentSpending = recentSpending.filter(s => s.id !== deleteTargetId);
-                renderApp(); 
-                closeDeleteModal();
-                // Jika modal lihat semua sedang terbuka, refresh isinya
-                if(!document.getElementById('modal-see-all').classList.contains('hidden')) {
-                    window.openSeeAllModal(); 
+                // Cek jika ini transaksi yg terikat dengan Misi Wajib
+                const billLinked = fixedBills.find(b => b.linkedTrxId === deleteTargetId);
+                if(billLinked) {
+                    billLinked.paid = false;
+                    billLinked.date = null;
+                    billLinked.linkedTrxId = null;
                 }
-                try { await updateDoc(docRef, { recentSpending }); } catch (e) { console.error(e); }
+
+                recentSpending = recentSpending.filter(s => s.id !== deleteTargetId);
+                renderApp(); closeDeleteModal();
+                if(!document.getElementById('modal-see-all').classList.contains('hidden')) window.openSeeAllModal(); 
+                try { await updateDoc(docRef, { recentSpending, fixedBills }); } catch (e) { console.error(e); }
             }
         };
 
-        // --- DRAFT ACTIONS ---
+        // --- DRAFT ---
         window.editDraft = () => { draftUIState = 'edit'; renderApp(); };
         window.saveDraft = async () => {
-            let updatedDraft = (draftBills || fixedBills).map(bill => {
+            let baseArray = draftBills || fixedBills.filter(b => b.showInDraft);
+            let updatedDraft = baseArray.map(bill => {
                 let inputEl = document.getElementById(`draft-input-${bill.id}`);
                 return { ...bill, amount: inputEl ? (parseInt(inputEl.value) || 0) : bill.amount };
             });
@@ -685,7 +697,7 @@
             try { await updateDoc(docRef, { draftBills }); } catch (e) { console.error(e); }
         };
 
-        // --- TAB NAVIGATION ---
+        // --- TABS ---
         window.switchTab = (tabName) => {
             const tActive = document.getElementById('tab-active'); const tDraft = document.getElementById('tab-draft');
             const nActive = document.getElementById('nav-active'); const nDraft = document.getElementById('nav-draft');
