@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amoira Harmony v7</title>
+    <title>Amoira Harmony v8</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Nunito', sans-serif; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Custom Calendar Styles */
+        .calendar-day { cursor: pointer; transition: all 0.2s; border-radius: 0.5rem; }
+        .calendar-day:hover { background-color: #E5F2F0; color: #3B7A72; }
+        .calendar-day.active { background-color: #4A8B82; color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(74, 139, 130, 0.3); }
+        .calendar-day.has-data::after { content: ''; display: block; width: 4px; height: 4px; background-color: #A14740; border-radius: 50%; margin: 2px auto 0; }
+        .calendar-day.active.has-data::after { background-color: white; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-gray-800 h-screen overflow-hidden flex flex-col relative">
 
     <!-- Header -->
     <header class="bg-white px-6 py-5 shadow-sm flex justify-between items-center shrink-0 z-10 rounded-b-3xl">
-        <h1 class="text-xl font-extrabold text-[#3B7A72] tracking-wide"><i class="fa-solid fa-leaf mr-2 text-[#A14740]"></i>Harmony v7</h1>
+        <h1 class="text-xl font-extrabold text-[#3B7A72] tracking-wide"><i class="fa-solid fa-leaf mr-2 text-[#A14740]"></i>Harmony v8</h1>
         <div class="flex items-center bg-[#E5F2F0] px-3 py-1 rounded-full border border-[#BDE0DB]">
             <div id="sync-dot" class="w-2 h-2 rounded-full bg-[#3B7A72] animate-pulse mr-2"></div>
             <span id="sync-text" class="text-[10px] font-bold text-[#3B7A72] uppercase tracking-wider">Menghubungkan...</span>
@@ -29,24 +37,29 @@
         <!-- TAB 1: ACTIVE -->
         <section id="tab-active" class="block space-y-6">
             
-            <!-- Hero Card: Deep Pastel -->
+            <!-- Dual-Balance Hero Card -->
             <div class="bg-gradient-to-br from-[#4A8B82] to-[#6FAAA3] rounded-3xl p-6 shadow-lg shadow-[#4A8B82]/20 relative overflow-hidden text-white">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10"></div>
                 
-                <p class="text-[10px] font-bold tracking-wider uppercase mb-1 opacity-90" id="active-period">PERIODE: ...</p>
-                <p class="text-[10px] bg-white/20 inline-block px-2 py-1 rounded-md mb-4 backdrop-blur-sm font-semibold shadow-sm"><i class="fa-solid fa-piggy-bank mr-1"></i>Kantong Keluarga</p>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-[10px] bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm font-semibold shadow-sm tracking-wider uppercase" id="active-period">PERIODE: ...</p>
+                </div>
                 
-                <div class="flex justify-between items-end mb-2">
+                <div class="grid grid-cols-2 gap-4 border-b border-white/20 pb-4">
                     <div>
-                        <p class="text-xs font-medium opacity-90 mb-1">Saldo Utama Saat Ini</p>
-                        <p class="text-3xl font-extrabold tracking-tight drop-shadow-md" id="saldo-utama">Rp 0</p>
+                        <p class="text-[10px] font-medium opacity-90 mb-1 uppercase tracking-wider"><i class="fa-solid fa-wallet mr-1"></i>Saldo Utama</p>
+                        <p class="text-2xl font-extrabold tracking-tight drop-shadow-md" id="saldo-utama">Rp 0</p>
+                    </div>
+                    <div class="text-right border-l border-white/20 pl-4">
+                        <p class="text-[10px] font-medium opacity-90 mb-1 uppercase tracking-wider"><i class="fa-solid fa-credit-card mr-1"></i>Sisa Paylater</p>
+                        <p class="text-2xl font-extrabold tracking-tight drop-shadow-md text-[#FCF5E3]" id="sisa-paylater">Rp 0</p>
                     </div>
                 </div>
 
-                <div class="mt-5 pt-4 border-t border-white/20 grid grid-cols-2 gap-4">
+                <div class="mt-4 grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-[10px] font-medium opacity-90 mb-1 uppercase tracking-wider">Jatah Aman Harian</p>
-                        <p class="text-xl font-bold drop-shadow-sm" id="jatah-harian">Rp 0</p>
+                        <p class="text-lg font-bold drop-shadow-sm" id="jatah-harian">Rp 0</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[10px] font-medium opacity-90 mb-1 uppercase tracking-wider">Sisa Hari</p>
@@ -55,22 +68,34 @@
                 </div>
             </div>
 
-            <!-- Dashboard Analytics Mockup -->
-            <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-sm font-extrabold text-gray-700">Analitik Pengeluaran</h3>
-                    <i class="fa-solid fa-chart-pie text-[#A14740]"></i>
+            <!-- Dashboard Analytics & Calendar Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Donut Chart -->
+                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col justify-center items-center relative">
+                    <div class="flex justify-between items-center w-full mb-2">
+                        <h3 class="text-sm font-extrabold text-gray-700">Analitik Pengeluaran</h3>
+                        <i class="fa-solid fa-chart-pie text-[#A14740]"></i>
+                    </div>
+                    <div class="w-full h-48 relative">
+                        <canvas id="expenseChart"></canvas>
+                        <!-- Center Text Backup -->
+                        <div id="chart-empty" class="hidden absolute inset-0 flex items-center justify-center text-xs text-gray-400 font-bold">Belum Ada Data</div>
+                    </div>
                 </div>
-                <!-- Mockup Bar Chart -->
-                <div class="flex items-end justify-between h-20 gap-2 mb-2">
-                    <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#D17B74] h-[30%] rounded-t-md transition-all"></div></div>
-                    <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#6B9E9E] h-[70%] rounded-t-md transition-all"></div></div>
-                    <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#C2A15B] h-[50%] rounded-t-md transition-all"></div></div>
-                    <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#9E7A9E] h-[85%] rounded-t-md transition-all"></div></div>
-                    <div class="w-full bg-gray-50 rounded-t-md relative group"><div class="absolute bottom-0 w-full bg-[#4A8B82] h-[20%] rounded-t-md transition-all"></div></div>
-                </div>
-                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-tighter">
-                    <span>Snack</span><span>Bills</span><span>Trans</span><span>Save</span><span>Other</span>
+
+                <!-- Interactive Calendar -->
+                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-extrabold text-gray-700" id="calendar-title">Kalender Transaksi</h3>
+                        <button onclick="window.clearDateFilter()" id="btn-clear-filter" class="hidden text-[10px] font-bold text-[#A14740] bg-[#FCE3E1] px-2 py-1 rounded-md"><i class="fa-solid fa-times mr-1"></i>Reset Filter</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-extrabold text-gray-400 mb-2">
+                        <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-700">
+                        <!-- JS Populate -->
+                    </div>
                 </div>
             </div>
 
@@ -85,8 +110,7 @@
             <!-- Recent Spending -->
             <div>
                 <div class="flex justify-between items-center mb-3 ml-2">
-                    <h3 class="text-sm font-extrabold text-gray-700">Aktivitas Terakhir</h3>
-                    <span class="text-xs text-[#3B7A72] font-bold cursor-pointer bg-[#E5F2F0] px-2 py-1 rounded-md">Lihat Semua</span>
+                    <h3 class="text-sm font-extrabold text-gray-700" id="spending-list-title">Aktivitas Terakhir</h3>
                 </div>
                 <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 min-h-[100px]" id="spending-list">
                     <p class="text-center text-sm text-gray-400 italic mt-4" id="empty-state">Belum ada aktivitas dicatat.</p>
@@ -101,24 +125,20 @@
                 <h2 class="text-lg font-extrabold text-[#3B7A72] mb-1">Perencanaan Bulan Depan</h2>
                 <p class="text-[10px] font-bold tracking-wider uppercase mb-6 text-gray-500 bg-gray-100 inline-block px-2 py-1 rounded-md" id="draft-period-title">PERIODE: ...</p>
                 
-                <!-- VIEW MODE (Collapsed summary after saving) -->
                 <div id="draft-view-mode" class="hidden">
                     <div class="bg-[#E5F2F0] p-6 rounded-2xl border border-[#BDE0DB] text-center shadow-sm">
                         <i class="fa-solid fa-file-circle-check text-4xl text-[#3B7A72] mb-3"></i>
                         <p class="text-sm font-extrabold text-[#3B7A72]">Planning <span id="draft-view-period">...</span> Tersimpan.</p>
-                        
                         <div id="draft-edit-container" class="mt-4">
                             <button onclick="window.editDraft()" class="text-xs font-extrabold text-[#3B7A72] bg-white hover:bg-gray-50 py-2.5 px-6 rounded-xl border border-[#BDE0DB] shadow-sm transition">Buka & Edit Draft</button>
                             <p class="text-[10px] text-gray-500 mt-2 font-semibold">Tersedia sebelum tanggal 25</p>
                         </div>
-                        
                         <div id="draft-locked-container" class="mt-4 hidden">
                             <p class="text-xs font-bold text-[#A14740] bg-[#FCE3E1] py-2 px-4 rounded-xl inline-block border border-[#F5C2C0]"><i class="fa-solid fa-lock mr-1"></i>Draft Terkunci (Lewat tgl 25)</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- EDIT MODE (Full Page Form) -->
                 <div id="draft-edit-mode" class="hidden">
                     <p class="text-xs font-semibold text-gray-400 mb-4">Sesuaikan jika ada perubahan tagihan.</p>
                     <div class="space-y-4" id="draft-container">
@@ -139,39 +159,78 @@
     </button>
 
     <!-- Modal Input Spending -->
-    <div id="modal-spending" class="hidden absolute inset-0 bg-gray-900/40 z-50 flex items-end justify-center backdrop-blur-sm transition-opacity">
+    <div id="modal-spending" class="hidden absolute inset-0 bg-gray-900/60 z-50 flex items-end justify-center backdrop-blur-sm transition-opacity">
         <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl">
             <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
-            <h3 class="text-lg font-extrabold text-gray-800 mb-5">Catat Pengeluaran Baru</h3>
+            <h3 class="text-lg font-extrabold text-gray-800 mb-5" id="modal-spending-title">Catat Pengeluaran Baru</h3>
+            <input type="hidden" id="modal-edit-id" value="">
             
             <div class="space-y-4 mb-8">
-                <div>
-                    <label class="text-xs font-extrabold text-gray-500 mb-2 block uppercase tracking-wider">Nominal (Rp)</label>
-                    <input type="number" id="modal-amount" placeholder="0" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-4 text-2xl font-black text-gray-700 focus:border-[#4A8B82] focus:ring-2 focus:ring-[#4A8B82]/20 outline-none transition">
+                <!-- Date Input -->
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="text-[10px] font-extrabold text-gray-500 mb-1 block uppercase tracking-wider">Tanggal Transaksi</label>
+                        <input type="date" id="modal-date" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-sm font-bold text-gray-700 focus:border-[#4A8B82] outline-none">
+                    </div>
+                    <div class="flex-2 w-2/3">
+                        <label class="text-[10px] font-extrabold text-gray-500 mb-1 block uppercase tracking-wider">Nominal (Rp)</label>
+                        <input type="number" id="modal-amount" placeholder="0" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-xl font-black text-gray-700 focus:border-[#4A8B82] outline-none">
+                    </div>
                 </div>
+
+                <!-- 7 Categories -->
                 <div>
-                    <label class="text-xs font-extrabold text-gray-500 mb-2 block uppercase tracking-wider">Kategori & Keterangan</label>
-                    <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
-                        <label class="cursor-pointer shrink-0">
-                            <input type="radio" name="category" value="Makanan" class="peer sr-only" checked>
-                            <div class="px-4 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#FCE3E1] peer-checked:text-[#A14740] peer-checked:border-[#A14740] border border-transparent text-xs font-bold text-gray-500 transition"><i class="fa-solid fa-burger mr-1"></i>Makanan</div>
+                    <label class="text-[10px] font-extrabold text-gray-500 mb-2 block uppercase tracking-wider">Kategori (Simple 7)</label>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="category" value="Makan Minum" class="peer sr-only" checked>
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#A14740] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-burger mr-1"></i>Makan Minum</div>
                         </label>
-                        <label class="cursor-pointer shrink-0">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="category" value="Grocery" class="peer sr-only">
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#D17B74] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-basket-shopping mr-1"></i>Grocery</div>
+                        </label>
+                        <label class="cursor-pointer">
                             <input type="radio" name="category" value="Transport" class="peer sr-only">
-                            <div class="px-4 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#E5F2F0] peer-checked:text-[#3B7A72] peer-checked:border-[#3B7A72] border border-transparent text-xs font-bold text-gray-500 transition"><i class="fa-solid fa-car mr-1"></i>Transport</div>
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#3B7A72] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-car mr-1"></i>Transport</div>
                         </label>
-                        <label class="cursor-pointer shrink-0">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="category" value="Tagihan" class="peer sr-only">
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#4A8B82] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>Tagihan</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="category" value="Tabungan" class="peer sr-only">
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#6B9E9E] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-piggy-bank mr-1"></i>Tabungan</div>
+                        </label>
+                        <label class="cursor-pointer">
                             <input type="radio" name="category" value="Paylater" class="peer sr-only">
-                            <div class="px-4 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#FCF5E3] peer-checked:text-[#9B7D26] peer-checked:border-[#9B7D26] border border-transparent text-xs font-bold text-gray-500 transition"><i class="fa-solid fa-credit-card mr-1"></i>Paylater</div>
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#9B7D26] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-credit-card mr-1"></i>Paylater</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="category" value="Lainnya" class="peer sr-only">
+                            <div class="px-3 py-2 bg-gray-100 rounded-lg peer-checked:bg-[#9E7A9E] peer-checked:text-white text-[10px] font-bold text-gray-500 transition"><i class="fa-solid fa-box mr-1"></i>Lainnya</div>
                         </label>
                     </div>
-                    <input type="text" id="modal-desc" placeholder="Keterangan (Cth: Mie Gacoan)" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-sm font-bold text-gray-700 focus:border-[#4A8B82] outline-none">
+                    <input type="text" id="modal-desc" placeholder="Keterangan Spesifik (Cth: Beli Pampers, Gacoan)" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-sm font-bold text-gray-700 focus:border-[#4A8B82] outline-none">
                 </div>
             </div>
 
             <div class="flex gap-3">
                 <button onclick="closeSpendingModal()" class="w-1/3 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl text-sm font-extrabold transition">Batal</button>
                 <button onclick="saveSpending()" class="w-2/3 py-4 bg-[#4A8B82] hover:bg-[#3B7A72] text-white rounded-2xl text-sm font-extrabold shadow-lg shadow-[#4A8B82]/30 transition">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Confirmation -->
+    <div id="modal-delete" class="hidden absolute inset-0 bg-gray-900/60 z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center">
+            <div class="w-16 h-16 bg-[#FCE3E1] text-[#A14740] rounded-full flex items-center justify-center text-2xl mx-auto mb-4"><i class="fa-solid fa-trash-can"></i></div>
+            <h3 class="text-lg font-extrabold text-gray-800 mb-2">Hapus Transaksi?</h3>
+            <p class="text-xs text-gray-500 font-semibold mb-6">Yakin hapus transaksi ini? Saldo Utama dan Grafik akan dihitung ulang secara otomatis.</p>
+            <div class="flex gap-3">
+                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-extrabold">Batal</button>
+                <button onclick="executeDelete()" class="flex-1 py-3 bg-[#A14740] text-white rounded-xl text-sm font-extrabold shadow-md shadow-[#A14740]/30">Ya, Hapus</button>
             </div>
         </div>
     </div>
@@ -189,7 +248,7 @@
         </button>
     </nav>
 
-    <!-- Firebase Logic -->
+    <!-- Firebase & App Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
@@ -205,67 +264,151 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const docRef = doc(db, "cycles", "05-2026");
 
-        const currentMonthDoc = "05-2026"; 
-        const docRef = doc(db, "cycles", currentMonthDoc);
-
+        // Constants & State
         const TOTAL_INCOME = 12500000;
+        const LIMIT_PAYLATER = 1000000;
         
-        // Data Default Active
         let fixedBills = [
             { id: 1, name: "Uang Adik Istri", amount: 1500000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]" },
             { id: 2, name: "Uang Adik Amoira", amount: 300000, paid: false, date: null, icon: "fa-gift", color: "text-[#A14740]", bg: "bg-[#FCE3E1]" },
-            { id: 3, name: "Dana Darurat", amount: 2000000, paid: false, date: null, icon: "fa-shield", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" }, // REVISI ICON
-            { id: 4, name: "Tabungan Anak", amount: 1500000, paid: false, date: null, icon: "fa-coins", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" }, // REVISI TEKS
+            { id: 3, name: "Dana Darurat", amount: 2000000, paid: false, date: null, icon: "fa-shield", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
+            { id: 4, name: "Tabungan Anak", amount: 1500000, paid: false, date: null, icon: "fa-coins", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" },
             { id: 5, name: "Kontrakan", amount: 1300000, paid: false, date: null, icon: "fa-house", color: "text-[#7A4E7A]", bg: "bg-[#F0E6F0]" },
             { id: 6, name: "Listrik (Saran Awal)", amount: 500000, paid: false, date: null, icon: "fa-bolt", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
             { id: 7, name: "WiFi Internet", amount: 280000, paid: false, date: null, icon: "fa-wifi", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
             { id: 8, name: "PDAM / Air", amount: 150000, paid: false, date: null, icon: "fa-droplet", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
-            { id: 9, name: "IPL", amount: 130000, paid: false, date: null, icon: "fa-building", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" }
+            { id: 9, name: "IPL", amount: 130000, paid: false, date: null, icon: "fa-building", color: "text-[#3B7A72]", bg: "bg-[#E5F2F0]" },
+            { id: 10, name: "Alokasi Paylater", amount: 1000000, paid: false, date: null, icon: "fa-credit-card", color: "text-[#9B7D26]", bg: "bg-[#FCF5E3]" } // Tambahan V8
         ];
 
         let recentSpending = [];
         let draftBills = null; 
-        let draftUIState = 'view'; // 'view' or 'edit'
+        let draftUIState = 'view';
+        let filterDate = null;
+        let deleteTargetId = null;
+        let myDonutChart = null;
 
         const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        
+        // Colors for Simple 7
+        const catColors = {
+            'Makan Minum': '#A14740', 'Grocery': '#D17B74', 'Transport': '#3B7A72',
+            'Tagihan': '#4A8B82', 'Tabungan': '#6B9E9E', 'Paylater': '#9B7D26', 'Lainnya': '#9E7A9E'
+        };
+
+        const renderChart = () => {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            
+            // Group spending by category
+            let dataMap = {};
+            recentSpending.forEach(s => {
+                if(!dataMap[s.cat]) dataMap[s.cat] = 0;
+                dataMap[s.cat] += s.amount;
+            });
+
+            const labels = Object.keys(dataMap);
+            const dataVals = Object.values(dataMap);
+            const bgColors = labels.map(l => catColors[l] || '#CBD5E1');
+
+            if(labels.length === 0) {
+                document.getElementById('chart-empty').classList.remove('hidden');
+                if(myDonutChart) myDonutChart.destroy();
+                return;
+            }
+            document.getElementById('chart-empty').classList.add('hidden');
+
+            if(myDonutChart) myDonutChart.destroy();
+            
+            myDonutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: bgColors, borderWidth: 2, borderColor: '#fff' }] },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '70%',
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9, family: 'Nunito', weight: 'bold' } } } }
+                }
+            });
+        };
+
+        const renderCalendar = () => {
+            const today = new Date(); // Using context date for generation
+            const y = today.getFullYear();
+            const m = today.getMonth(); // 0-indexed
+            
+            const firstDay = new Date(y, m, 1).getDay();
+            const daysInMonth = new Date(y, m + 1, 0).getDate();
+            
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            // Generate Map of dates with spending
+            const spendingDates = new Set();
+            recentSpending.forEach(s => { if(s.date) spendingDates.add(s.date); });
+
+            // Empty slots
+            for(let i=0; i<firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            // Days
+            for(let d=1; d<=daysInMonth; d++) {
+                const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const hasData = spendingDates.has(dateStr) ? 'has-data' : '';
+                const isActive = filterDate === dateStr ? 'active' : '';
+                
+                grid.innerHTML += `<div class="calendar-day p-1 ${hasData} ${isActive}" onclick="window.toggleDateFilter('${dateStr}')">${d}</div>`;
+            }
+
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('calendar-title').innerText = `Kalender ${monthNames[m]} ${y}`;
+        };
+
+        window.toggleDateFilter = (dateStr) => {
+            if(filterDate === dateStr) filterDate = null; // Toggle off
+            else filterDate = dateStr;
+            renderApp();
+        };
+
+        window.clearDateFilter = () => { filterDate = null; renderApp(); };
 
         const renderApp = () => {
-            // 1. Math Kalkulasi
+            // Kalkulasi Saldo
             let totalBillsPaid = fixedBills.filter(b => b.paid).reduce((sum, b) => sum + b.amount, 0);
-            let totalBillsUnpaid = fixedBills.filter(b => !b.paid).reduce((sum, b) => sum + b.amount, 0);
-            let totalSpent = recentSpending.reduce((sum, s) => sum + s.amount, 0);
-            let saldoUtama = TOTAL_INCOME - totalBillsPaid - totalSpent;
+            let totalBillsUnpaid = fixedBills.filter(b => !b.paid && b.id !== 10).reduce((sum, b) => sum + b.amount, 0); // Exclude paylater alloc from cash logic
             
-            // 2. Hitung Tanggal & Periode
-            const date = new Date();
-            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-            const remainingDays = (lastDay - date.getDate()) + 1;
+            // Pengeluaran tunai (exclude paylater)
+            let spentCash = recentSpending.filter(s => s.cat !== 'Paylater').reduce((sum, s) => sum + s.amount, 0);
+            let spentPaylater = recentSpending.filter(s => s.cat === 'Paylater').reduce((sum, s) => sum + s.amount, 0);
+            
+            let saldoUtama = TOTAL_INCOME - totalBillsPaid - spentCash;
+            let saldoPaylater = LIMIT_PAYLATER - spentPaylater;
+
+            const today = new Date();
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const remainingDays = (lastDay - today.getDate()) + 1;
             
             let uangOperasionalAman = saldoUtama - totalBillsUnpaid;
             let jatahHarian = Math.floor(uangOperasionalAman / remainingDays);
 
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            const currMonth = months[date.getMonth()];
-            const currYear = date.getFullYear();
-            const nextMonthDate = new Date(currYear, date.getMonth() + 1, 1);
-            const nextMonth = months[nextMonthDate.getMonth()];
-            const nextYear = nextMonthDate.getFullYear();
-
-            // Set UI Tab 1
+            
             document.getElementById('saldo-utama').innerText = formatIDR(saldoUtama);
+            document.getElementById('sisa-paylater').innerText = formatIDR(saldoPaylater);
             document.getElementById('jatah-harian').innerText = jatahHarian > 0 ? formatIDR(jatahHarian) : "Rp 0";
             document.getElementById('sisa-hari').innerText = `${remainingDays} Hari`;
-            document.getElementById('active-period').innerText = `PERIODE: ${currMonth.toUpperCase()} ${currYear}`;
+            document.getElementById('active-period').innerText = `PERIODE: ${months[today.getMonth()].toUpperCase()} ${today.getFullYear()}`;
 
-            // Set UI Tab 2 (Period Text)
-            document.getElementById('draft-period-title').innerText = `PERIODE: ${nextMonth.toUpperCase()} ${nextYear}`;
-            document.getElementById('draft-view-period').innerText = `${nextMonth} ${nextYear}`;
+            // Tab 2 Label
+            const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            document.getElementById('draft-period-title').innerText = `PERIODE: ${months[nextMonthDate.getMonth()].toUpperCase()} ${nextMonthDate.getFullYear()}`;
+            document.getElementById('draft-view-period').innerText = `${months[nextMonthDate.getMonth()]} ${nextMonthDate.getFullYear()}`;
 
-            // 3. Render Daftar Bills Tab 1
+            // Render Bills
             const billsContainer = document.getElementById('bills-container');
             billsContainer.innerHTML = '';
             fixedBills.forEach(bill => {
+                if(bill.id === 10) return; // Hide Paylater default allocation from active tab checklist
                 const isPaidClass = bill.paid ? "bg-[#F8FAFC] border-gray-100 opacity-60" : "bg-white border-gray-100 shadow-sm";
                 const iconBg = bill.paid ? "bg-[#4A8B82] text-white" : `${bill.bg} ${bill.color}`;
                 const actionBtn = bill.paid 
@@ -286,18 +429,14 @@
                 `;
             });
 
-            // 4. Render Draft Logic (Tab 2)
+            // Render Draft Logic
             const viewMode = document.getElementById('draft-view-mode');
             const editMode = document.getElementById('draft-edit-mode');
             const draftContainer = document.getElementById('draft-container');
             
-            // Logic state toggle
             if (draftBills === null || draftUIState === 'edit') {
-                viewMode.classList.add('hidden');
-                editMode.classList.remove('hidden');
-                
+                viewMode.classList.add('hidden'); editMode.classList.remove('hidden');
                 draftContainer.innerHTML = '';
-                // Gunakan draftBills jika ada, jika tidak gunakan fixedBills sbg template
                 let dataToRender = draftBills || fixedBills; 
                 
                 dataToRender.forEach(bill => {
@@ -309,12 +448,8 @@
                     `;
                 });
             } else {
-                // Draft tersimpan -> View Mode ringkas
-                viewMode.classList.remove('hidden');
-                editMode.classList.add('hidden');
-                
-                // Conditional UI Edit/Lock
-                if (date.getDate() < 25) {
+                viewMode.classList.remove('hidden'); editMode.classList.add('hidden');
+                if (today.getDate() < 25) {
                     document.getElementById('draft-edit-container').classList.remove('hidden');
                     document.getElementById('draft-locked-container').classList.add('hidden');
                 } else {
@@ -323,31 +458,60 @@
                 }
             }
 
-            // 5. Render Recent Spending
+            // Filter & Render Spending
             const spendContainer = document.getElementById('spending-list');
-            if (recentSpending.length === 0) {
-                spendContainer.innerHTML = `<p class="text-center text-xs font-semibold text-gray-400 italic mt-6" id="empty-state">Belum ada pengeluaran hari ini.</p>`;
+            const btnClearFilter = document.getElementById('btn-clear-filter');
+            
+            let filteredSpending = recentSpending;
+            if(filterDate) {
+                filteredSpending = recentSpending.filter(s => s.date === filterDate);
+                document.getElementById('spending-list-title').innerHTML = `Aktivitas <span class="text-[#A14740] bg-[#FCE3E1] px-2 rounded ml-1">${filterDate}</span>`;
+                btnClearFilter.classList.remove('hidden');
+            } else {
+                document.getElementById('spending-list-title').innerText = `Aktivitas Terakhir`;
+                btnClearFilter.classList.add('hidden');
+            }
+
+            if (filteredSpending.length === 0) {
+                spendContainer.innerHTML = `<p class="text-center text-xs font-semibold text-gray-400 italic mt-6">Belum ada aktivitas dicatat.</p>`;
             } else {
                 spendContainer.innerHTML = '';
-                [...recentSpending].reverse().forEach(spend => {
-                    let catIcon = spend.cat === 'Makanan' ? 'fa-burger text-[#A14740] bg-[#FCE3E1]' : (spend.cat === 'Transport' ? 'fa-car text-[#3B7A72] bg-[#E5F2F0]' : 'fa-credit-card text-[#9B7D26] bg-[#FCF5E3]');
+                [...filteredSpending].reverse().forEach(spend => {
+                    let icon = ''; let bgCat = ''; let txtCat = catColors[spend.cat] || '#CBD5E1';
+                    if(spend.cat === 'Makan Minum') { icon='fa-burger'; bgCat='bg-[#FCE3E1]'; }
+                    else if(spend.cat === 'Grocery') { icon='fa-basket-shopping'; bgCat='bg-[#F5C2C0]'; }
+                    else if(spend.cat === 'Transport') { icon='fa-car'; bgCat='bg-[#E5F2F0]'; }
+                    else if(spend.cat === 'Tagihan') { icon='fa-file-invoice-dollar'; bgCat='bg-[#D1E8E5]'; }
+                    else if(spend.cat === 'Tabungan') { icon='fa-piggy-bank'; bgCat='bg-[#E0EDED]'; }
+                    else if(spend.cat === 'Paylater') { icon='fa-credit-card'; bgCat='bg-[#FCF5E3]'; }
+                    else { icon='fa-box'; bgCat='bg-[#F3EBF3]'; }
+
                     spendContainer.innerHTML += `
-                        <div class="flex justify-between items-center py-3 border-b border-gray-50 last:border-0">
+                        <div class="flex justify-between items-center py-3 border-b border-gray-50 last:border-0 group">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl ${catIcon} flex items-center justify-center"><i class="fa-solid text-sm"></i></div>
+                                <div class="w-9 h-9 rounded-xl ${bgCat} flex items-center justify-center" style="color: ${txtCat}"><i class="fa-solid ${icon} text-sm"></i></div>
                                 <div>
                                     <p class="text-sm font-extrabold text-gray-700">${spend.desc || spend.cat}</p>
-                                    <p class="text-[10px] font-bold text-gray-400">${spend.time}</p>
+                                    <p class="text-[10px] font-bold text-gray-400">${spend.date || '-'} | ${spend.time}</p>
                                 </div>
                             </div>
-                            <p class="text-sm font-black text-gray-700">-${formatIDR(spend.amount)}</p>
+                            <div class="flex items-center gap-3">
+                                <p class="text-sm font-black text-gray-700">-${formatIDR(spend.amount)}</p>
+                                <div class="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="window.editSpending(${spend.id})" class="text-[10px] text-gray-400 hover:text-[#3B7A72]"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="window.confirmDelete(${spend.id})" class="text-[10px] text-gray-400 hover:text-[#A14740]"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
                         </div>
                     `;
                 });
             }
+
+            renderChart();
+            renderCalendar();
         };
 
-        // --- FIREBASE SYNC FUNCTIONS ---
+        // --- FIREBASE SYNC ---
         async function syncDataFromCloud() {
             try {
                 const docSnap = await getDoc(docRef);
@@ -355,13 +519,14 @@
                     const data = docSnap.data();
                     if(data.fixedBills) fixedBills = data.fixedBills;
                     if(data.recentSpending) recentSpending = data.recentSpending;
-                    if(data.draftBills) {
-                        draftBills = data.draftBills;
-                        draftUIState = 'view'; // Pastikan form mengecil saat load jika ada data
-                    }
+                    if(data.draftBills) { draftBills = data.draftBills; draftUIState = 'view'; }
                 } else {
                     await setDoc(docRef, { fixedBills, recentSpending });
                 }
+                
+                // Add retro-id for old data if any
+                recentSpending = recentSpending.map((s, i) => { if(!s.id) s.id = Date.now() + i; return s; });
+                
                 document.getElementById('sync-text').innerText = "Tersinkronisasi";
                 document.getElementById('sync-dot').classList.remove('animate-pulse');
                 renderApp();
@@ -376,94 +541,111 @@
             let bill = fixedBills.find(b => b.id === id);
             if(bill) {
                 bill.paid = true;
-                const d = new Date();
-                bill.date = `${d.getDate()} ${d.toLocaleString('id-ID', {month:'short'})}`;
+                const d = new Date(); bill.date = `${d.getDate()} ${d.toLocaleString('id-ID', {month:'short'})}`;
                 renderApp(); 
-                try {
-                    await updateDoc(docRef, { fixedBills });
-                } catch (e) {
-                    console.error("Gagal update bill ke Firestore", e);
-                }
+                try { await updateDoc(docRef, { fixedBills }); } catch (e) { console.error(e); }
             }
         };
 
+        // --- SPENDING CRUD ---
+        window.openSpendingModal = () => {
+            document.getElementById('modal-spending-title').innerText = "Catat Pengeluaran Baru";
+            document.getElementById('modal-edit-id').value = '';
+            document.getElementById('modal-amount').value = '';
+            document.getElementById('modal-desc').value = '';
+            
+            // Default date to today
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('modal-date').value = todayStr;
+            document.getElementById('modal-date').setAttribute("min", "2026-01-01");
+            document.getElementById('modal-date').setAttribute("max", "2026-12-31");
+
+            document.getElementById('modal-spending').classList.remove('hidden');
+        };
+
+        window.closeSpendingModal = () => { document.getElementById('modal-spending').classList.add('hidden'); };
+
+        window.editSpending = (id) => {
+            const spend = recentSpending.find(s => s.id === id);
+            if(!spend) return;
+            document.getElementById('modal-spending-title').innerText = "Edit Transaksi";
+            document.getElementById('modal-edit-id').value = spend.id;
+            document.getElementById('modal-amount').value = spend.amount;
+            document.getElementById('modal-desc').value = spend.desc || '';
+            document.getElementById('modal-date').value = spend.date || new Date().toISOString().split('T')[0];
+            
+            document.querySelector(`input[name="category"][value="${spend.cat}"]`).checked = true;
+            document.getElementById('modal-spending').classList.remove('hidden');
+        };
+
         window.saveSpending = async () => {
+            const idVal = document.getElementById('modal-edit-id').value;
             const amount = parseInt(document.getElementById('modal-amount').value);
             const desc = document.getElementById('modal-desc').value;
             const cat = document.querySelector('input[name="category"]:checked').value;
+            const dateStr = document.getElementById('modal-date').value;
             
-            if(amount > 0) {
+            if(amount > 0 && dateStr) {
                 const d = new Date();
                 const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
                 
-                recentSpending.push({ amount, cat, desc, time: timeStr });
-                renderApp(); 
-                closeSpendingModal();
-
-                try {
-                    await updateDoc(docRef, { recentSpending });
-                } catch (e) {
-                    console.error("Gagal kirim spending ke Firestore", e);
+                if(idVal) { // Edit
+                    const idx = recentSpending.findIndex(s => s.id === parseInt(idVal));
+                    if(idx !== -1) {
+                        recentSpending[idx] = { id: parseInt(idVal), amount, cat, desc, date: dateStr, time: timeStr };
+                    }
+                } else { // Create
+                    recentSpending.push({ id: Date.now(), amount, cat, desc, date: dateStr, time: timeStr });
                 }
+
+                renderApp(); closeSpendingModal();
+                try { await updateDoc(docRef, { recentSpending }); } catch (e) { console.error(e); }
+            }
+        };
+
+        // --- DELETE LOGIC ---
+        window.confirmDelete = (id) => {
+            deleteTargetId = id;
+            document.getElementById('modal-delete').classList.remove('hidden');
+        };
+        window.closeDeleteModal = () => {
+            deleteTargetId = null;
+            document.getElementById('modal-delete').classList.add('hidden');
+        };
+        window.executeDelete = async () => {
+            if(deleteTargetId) {
+                recentSpending = recentSpending.filter(s => s.id !== deleteTargetId);
+                renderApp(); closeDeleteModal();
+                try { await updateDoc(docRef, { recentSpending }); } catch (e) { console.error(e); }
             }
         };
 
         // --- DRAFT ACTIONS ---
-        window.editDraft = () => {
-            draftUIState = 'edit';
-            renderApp();
-        };
-
+        window.editDraft = () => { draftUIState = 'edit'; renderApp(); };
         window.saveDraft = async () => {
-            // Tangkap nilai dari input form
             let updatedDraft = (draftBills || fixedBills).map(bill => {
                 let inputEl = document.getElementById(`draft-input-${bill.id}`);
-                return {
-                    ...bill,
-                    amount: inputEl ? (parseInt(inputEl.value) || 0) : bill.amount
-                };
+                return { ...bill, amount: inputEl ? (parseInt(inputEl.value) || 0) : bill.amount };
             });
-
-            draftBills = updatedDraft;
-            draftUIState = 'view'; // Tutup form setelah simpan
-            renderApp(); 
-
-            try {
-                // Simpan draft untuk bulan depan ke dokumen bulan ini (bisa dipisah nanti jika sistem ganti bulan)
-                await updateDoc(docRef, { draftBills });
-            } catch (e) {
-                console.error("Gagal kirim draft ke Firestore", e);
-            }
+            draftBills = updatedDraft; draftUIState = 'view'; renderApp(); 
+            try { await updateDoc(docRef, { draftBills }); } catch (e) { console.error(e); }
         };
 
-        // --- MODAL & TAB HANDLERS ---
-        window.openSpendingModal = () => {
-            document.getElementById('modal-amount').value = '';
-            document.getElementById('modal-desc').value = '';
-            document.getElementById('modal-spending').classList.remove('hidden');
-        };
-        window.closeSpendingModal = () => { document.getElementById('modal-spending').classList.add('hidden'); };
-
+        // --- TAB NAVIGATION ---
         window.switchTab = (tabName) => {
-            const tActive = document.getElementById('tab-active');
-            const tDraft = document.getElementById('tab-draft');
-            const nActive = document.getElementById('nav-active');
-            const nDraft = document.getElementById('nav-draft');
-
+            const tActive = document.getElementById('tab-active'); const tDraft = document.getElementById('tab-draft');
+            const nActive = document.getElementById('nav-active'); const nDraft = document.getElementById('nav-draft');
             if(tabName === 'active') {
                 tActive.classList.remove('hidden'); tDraft.classList.add('hidden');
-                nActive.classList.replace('text-gray-400', 'text-[#4A8B82]');
-                nDraft.classList.replace('text-[#4A8B82]', 'text-gray-400');
+                nActive.classList.replace('text-gray-400', 'text-[#4A8B82]'); nDraft.classList.replace('text-[#4A8B82]', 'text-gray-400');
             } else {
                 tActive.classList.add('hidden'); tDraft.classList.remove('hidden');
-                nDraft.classList.replace('text-gray-400', 'text-[#4A8B82]');
-                nActive.classList.replace('text-[#4A8B82]', 'text-gray-400');
+                nDraft.classList.replace('text-gray-400', 'text-[#4A8B82]'); nActive.classList.replace('text-[#4A8B82]', 'text-gray-400');
             }
         };
 
         // Boot
         syncDataFromCloud();
-
     </script>
 </body>
 </html>
