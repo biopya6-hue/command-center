@@ -91,31 +91,58 @@
             if(!text) return;
 
             const btn = document.getElementById('btn-process-ai');
+            const originalBtnText = btn.innerHTML; // Simpan teks asli
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menganalisa...';
             btn.disabled = true;
 
             try {
                 const todayStr = new Date().toISOString().split('T')[0];
+                console.log("Mengirim ke AI:", text); // Debug log
+
                 const res = await fetch(GAS_AI_PROXY_URL, {
                     method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }, // Fix CORS issue
                     body: JSON.stringify({text: text, currentDate: todayStr})
                 });
-                const data = await res.json();
                 
+                const dataText = await res.text(); // Ambil teks mentah dulu
+                console.log("Balasan mentah AI:", dataText); // Debug log (Bisa dicek di Inspect Element > Console)
+                
+                let data;
+                try {
+                    data = JSON.parse(dataText);
+                } catch(parseErr) {
+                    throw new Error("AI membalas dengan format yang bukan JSON.");
+                }
+
+                // Cek apakah balasan mengandung pesan error dari Apps Script
+                if(data.length > 0 && data[0].error) {
+                    alert("Backend Error: " + data[0].error);
+                    return;
+                }
+                
+                // Pastikan yang diterima adalah Array
                 if(Array.isArray(data) && data.length > 0) {
                     currentAIDrafts = data;
-                    renderAIDrafts();
+                    renderAIDrafts(); // Fungsi dari v11.1
                 } else {
-                    alert("Amoira, AI tidak menemukan transaksi. Coba tulis lebih jelas.");
+                    // Coba perbaiki jika AI keras kepala mengembalikan Object bukan Array
+                    if (data.amount && data.category) {
+                        currentAIDrafts = [data]; // Jadikan array
+                        renderAIDrafts();
+                    } else {
+                        alert("AI tidak menemukan format transaksi yang pas. Cek penulisanmu.");
+                    }
                 }
             } catch(e) {
-                alert("Error koneksi ke AI. Cek URL GAS kamu.");
+                console.error("Fetch Error:", e);
+                alert("Sistem Gagal. Cek Console Browser (F12) untuk detail error.");
             } finally {
-                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Analisa Semua';
+                btn.innerHTML = originalBtnText; // Kembalikan teks asli
                 btn.disabled = false;
             }
         };
-
+        
         const renderAIDrafts = () => {
             const container = document.getElementById('ai-result-container');
             container.innerHTML = `<p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2">Hasil Deteksi (${currentAIDrafts.length} Transaksi)</p>`;
