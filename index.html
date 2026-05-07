@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amoira Harmony v11 Final</title>
+    <title>Amoira Harmony v11.1 Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,6 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Nunito', sans-serif; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
+        textarea { resize: none; }
         
         /* Custom Calendar Styles */
         .calendar-day { cursor: pointer; transition: all 0.2s; border-radius: 0.5rem; }
@@ -18,9 +19,6 @@
         .calendar-day.active { background-color: #4A8B82; color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(74, 139, 130, 0.3); }
         .calendar-day.has-data::after { content: ''; display: block; width: 4px; height: 4px; background-color: #A14740; border-radius: 50%; margin: 2px auto 0; }
         .calendar-day.active.has-data::after { background-color: white; }
-
-        /* Textarea reset */
-        textarea { resize: none; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-gray-800 h-screen overflow-hidden flex flex-col relative">
@@ -105,8 +103,7 @@
                     <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-extrabold text-gray-400 mb-2">
                         <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
                     </div>
-                    <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-700">
-                        </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-700"></div>
                 </div>
             </div>
 
@@ -130,10 +127,8 @@
 
             <div>
                 <h3 class="text-sm font-extrabold text-gray-700 mb-3 ml-2 mt-4">Misi Wajib Bulan Ini</h3>
-                <div class="space-y-3" id="bills-container">
-                    </div>
+                <div class="space-y-3" id="bills-container"></div>
             </div>
-
         </section>
 
         <section id="tab-draft" class="hidden space-y-6">
@@ -157,8 +152,7 @@
 
                 <div id="draft-edit-mode" class="hidden">
                     <p class="text-xs font-semibold text-gray-400 mb-4">Sesuaikan jika ada perubahan tagihan & alokasi.</p>
-                    <div class="space-y-4" id="draft-container">
-                        </div>
+                    <div class="space-y-4" id="draft-container"></div>
                     <button onclick="window.saveDraft()" class="w-full mt-6 py-4 bg-[#4A8B82] hover:bg-[#3B7A72] text-white rounded-2xl transition font-bold shadow-md shadow-[#4A8B82]/30">
                         <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Simpan Perencanaan
                     </button>
@@ -201,7 +195,6 @@
                     <input type="text" id="modal-desc" placeholder="Keterangan Spesifik" class="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-sm font-bold text-gray-700 focus:border-[#4A8B82] outline-none">
                 </div>
             </div>
-
             <div class="flex gap-3">
                 <button onclick="closeSpendingModal()" class="w-1/3 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl text-sm font-extrabold transition">Batal</button>
                 <button onclick="saveSpending()" class="w-2/3 py-4 bg-[#4A8B82] hover:bg-[#3B7A72] text-white rounded-2xl text-sm font-extrabold shadow-lg shadow-[#4A8B82]/30 transition">Simpan Data</button>
@@ -215,8 +208,7 @@
                 <h3 class="text-md font-extrabold text-gray-800" id="see-all-title">Semua Transaksi</h3>
                 <button onclick="closeSeeAllModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
             </div>
-            <div class="flex-1 overflow-y-auto p-5 hide-scrollbar space-y-1" id="modal-see-all-list">
-                </div>
+            <div class="flex-1 overflow-y-auto p-5 hide-scrollbar space-y-1" id="modal-see-all-list"></div>
         </div>
     </div>
 
@@ -251,8 +243,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-        // URL PROXY GOOGLE APPS SCRIPT
-        const GAS_AI_PROXY_URL = "https://script.google.com/macros/s/AKfycbxCLbh3M_QLmjdJHJ8rYaB_iofKDa-GbWIcqAg_Vjvj5cNbQ0jYX7MkaV7VLrXGyose/exec";
+        // CONFIG (URL GAS TERBARU)
+        const GAS_AI_PROXY_URL = "https://script.google.com/macros/s/AKfycbyIMkx8plnq2CDzTdZtFgRauLJttgQmSz4OmQsrm9zhs41um_XizdF0FCdFIinX-GLt/exec";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAh0vnMQcvRk0cQ9QdDLDto7eQbxANWYWY",
@@ -297,11 +289,7 @@
         let currentAIDrafts = []; 
 
         const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
-        
-        const catColors = {
-            'Makan Minum': '#A14740', 'Grocery': '#D17B74', 'Transport': '#3B7A72',
-            'Tagihan': '#4A8B82', 'Tabungan': '#6B9E9E', 'Paylater': '#9B7D26', 'Lainnya': '#9E7A9E'
-        };
+        const catColors = { 'Makan Minum': '#A14740', 'Grocery': '#D17B74', 'Transport': '#3B7A72', 'Tagihan': '#4A8B82', 'Tabungan': '#6B9E9E', 'Paylater': '#9B7D26', 'Lainnya': '#9E7A9E' };
 
         // --- AI LOGIC (V11) ---
         window.processAI = async () => {
@@ -324,15 +312,10 @@
                 
                 const dataText = await res.text(); 
                 let data;
-                try { 
-                    data = JSON.parse(dataText); 
-                } catch(e) { 
-                    throw new Error("Format AI Error: " + dataText); 
-                }
+                try { data = JSON.parse(dataText); } 
+                catch(e) { throw new Error("Format AI Error: " + dataText); }
 
-                if(data.length > 0 && data[0].error) {
-                    alert("Backend Error: " + data[0].error); return;
-                }
+                if(data.length > 0 && data[0].error) { alert("Backend Error: " + data[0].error); return; }
                 
                 if(Array.isArray(data) && data.length > 0) {
                     currentAIDrafts = data;
@@ -343,13 +326,8 @@
                 } else {
                     alert("Gagal memecah transaksi. Tolong perjelas penulisannya.");
                 }
-            } catch(e) {
-                console.error("System Error:", e);
-                alert("Gagal menghubungi server. Pastikan URL proxy benar.");
-            } finally {
-                btn.innerHTML = originalBtnText;
-                btn.disabled = false;
-            }
+            } catch(e) { console.error("System Error:", e); alert("Gagal menghubungi server AI."); } 
+            finally { btn.innerHTML = originalBtnText; btn.disabled = false; }
         };
 
         const renderAIDrafts = () => {
@@ -368,39 +346,25 @@
                             </div>
                         </div>
                         <p class="text-sm font-black text-gray-800">${formatIDR(item.amount)}</p>
-                    </div>
-                `;
+                    </div>`;
             });
 
             container.innerHTML += `
                 <div class="flex gap-2 mt-4 pt-2">
                     <button onclick="window.cancelDrafts()" class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl font-bold text-xs transition">Batal / Ulangi</button>
                     <button onclick="window.saveAllDrafts()" class="flex-2 w-2/3 py-3.5 bg-[#4A8B82] hover:bg-[#3B7A72] text-white rounded-xl font-bold text-xs shadow-md transition">Benar, Simpan Semua (${currentAIDrafts.length})</button>
-                </div>
-            `;
+                </div>`;
             container.classList.remove('hidden');
         };
 
-        window.cancelDrafts = () => {
-            currentAIDrafts = [];
-            document.getElementById('ai-result-container').classList.add('hidden');
-        };
+        window.cancelDrafts = () => { currentAIDrafts = []; document.getElementById('ai-result-container').classList.add('hidden'); };
 
         window.saveAllDrafts = async () => {
             const d = new Date();
             const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-            
             currentAIDrafts.forEach(item => {
-                recentSpending.push({ 
-                    id: Date.now() + Math.floor(Math.random()*1000), 
-                    amount: parseInt(item.amount), 
-                    cat: item.category, 
-                    desc: item.desc, 
-                    date: item.date, 
-                    time: timeStr 
-                });
+                recentSpending.push({ id: Date.now() + Math.floor(Math.random()*1000), amount: parseInt(item.amount), cat: item.category, desc: item.desc, date: item.date, time: timeStr });
             });
-
             document.getElementById('ai-input').value = '';
             window.cancelDrafts();
             renderApp();
@@ -408,47 +372,23 @@
             window.switchTab('dashboard'); 
         };
 
-        // --- DASHBOARD RENDERING (V10 FULL BACKBONE) ---
+        // --- DASHBOARD RENDERING (V10 BACKBONE) ---
         const renderChart = () => {
             const ctx = document.getElementById('expenseChart').getContext('2d');
             let dataMap = {};
-            recentSpending.forEach(s => {
-                if(!dataMap[s.cat]) dataMap[s.cat] = 0;
-                dataMap[s.cat] += s.amount;
-            });
-
-            const labels = Object.keys(dataMap);
-            const dataVals = Object.values(dataMap);
-            const bgColors = labels.map(l => catColors[l] || '#CBD5E1');
-
-            if(labels.length === 0) {
-                document.getElementById('chart-empty').classList.remove('hidden');
-                if(myDonutChart) myDonutChart.destroy();
-                return;
-            }
+            recentSpending.forEach(s => { if(!dataMap[s.cat]) dataMap[s.cat] = 0; dataMap[s.cat] += s.amount; });
+            const labels = Object.keys(dataMap); const dataVals = Object.values(dataMap); const bgColors = labels.map(l => catColors[l] || '#CBD5E1');
+            if(labels.length === 0) { document.getElementById('chart-empty').classList.remove('hidden'); if(myDonutChart) myDonutChart.destroy(); return; }
             document.getElementById('chart-empty').classList.add('hidden');
             if(myDonutChart) myDonutChart.destroy();
-            
-            myDonutChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: bgColors, borderWidth: 2, borderColor: '#fff' }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9, family: 'Nunito', weight: 'bold' } } } } }
-            });
+            myDonutChart = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: bgColors, borderWidth: 2, borderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9, family: 'Nunito', weight: 'bold' } } } } } });
         };
 
         const renderCalendar = () => {
-            const today = new Date(); 
-            const y = today.getFullYear();
-            const m = today.getMonth();
-            const firstDay = new Date(y, m, 1).getDay();
-            const daysInMonth = new Date(y, m + 1, 0).getDate();
-            
-            const grid = document.getElementById('calendar-grid');
-            grid.innerHTML = '';
-
-            const spendingDates = new Set();
-            recentSpending.forEach(s => { if(s.date) spendingDates.add(s.date); });
-
+            const today = new Date(); const y = today.getFullYear(); const m = today.getMonth();
+            const firstDay = new Date(y, m, 1).getDay(); const daysInMonth = new Date(y, m + 1, 0).getDate();
+            const grid = document.getElementById('calendar-grid'); grid.innerHTML = '';
+            const spendingDates = new Set(); recentSpending.forEach(s => { if(s.date) spendingDates.add(s.date); });
             for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
             for(let d=1; d<=daysInMonth; d++) {
                 const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -473,283 +413,127 @@
             else if(spend.cat === 'Tabungan') { icon='fa-piggy-bank'; bgCat='bg-[#E0EDED]'; }
             else if(spend.cat === 'Paylater') { icon='fa-credit-card'; bgCat='bg-[#FCF5E3]'; }
             else { icon='fa-box'; bgCat='bg-[#F3EBF3]'; }
-
-            return `
-                <div class="flex justify-between items-center py-3 border-b border-gray-50 last:border-0 group bg-white rounded-xl px-2">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl ${bgCat} flex items-center justify-center shrink-0" style="color: ${txtCat}"><i class="fa-solid ${icon} text-sm"></i></div>
-                        <div>
-                            <p class="text-sm font-extrabold text-gray-700 leading-tight">${spend.desc || spend.cat}</p>
-                            <p class="text-[10px] font-bold text-gray-400 mt-0.5">${spend.date || '-'} | ${spend.time}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 shrink-0">
-                        <p class="text-sm font-black text-gray-700">-${formatIDR(spend.amount)}</p>
-                        <div class="flex flex-col gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                            <button onclick="window.editSpending(${spend.id})" class="text-[10px] text-gray-400 hover:text-[#3B7A72]"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="window.confirmDelete(${spend.id})" class="text-[10px] text-gray-400 hover:text-[#A14740]"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
+            return `<div class="flex justify-between items-center py-3 border-b border-gray-50 last:border-0 group bg-white rounded-xl px-2">
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-xl ${bgCat} flex items-center justify-center shrink-0" style="color: ${txtCat}"><i class="fa-solid ${icon} text-sm"></i></div>
+                        <div><p class="text-sm font-extrabold text-gray-700 leading-tight">${spend.desc || spend.cat}</p><p class="text-[10px] font-bold text-gray-400 mt-0.5">${spend.date || '-'} | ${spend.time}</p></div></div>
+                        <div class="flex items-center gap-3 shrink-0"><p class="text-sm font-black text-gray-700">-${formatIDR(spend.amount)}</p>
+                        <div class="flex flex-col gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"><button onclick="window.editSpending(${spend.id})" class="text-[10px] text-gray-400 hover:text-[#3B7A72]"><i class="fa-solid fa-pen"></i></button><button onclick="window.confirmDelete(${spend.id})" class="text-[10px] text-gray-400 hover:text-[#A14740]"><i class="fa-solid fa-trash"></i></button></div></div>
+                    </div>`;
         };
 
         const renderApp = () => {
-            // SALDO LOGIC
             let oldTotalBillsPaid = fixedBills.filter(b => b.paid && !b.linkedTrxId).reduce((sum, b) => sum + b.amount, 0);
             let spentCash = recentSpending.filter(s => s.cat !== 'Paylater').reduce((sum, s) => sum + s.amount, 0);
             let spentPaylater = recentSpending.filter(s => s.cat === 'Paylater').reduce((sum, s) => sum + s.amount, 0);
-            
             let saldoUtama = TOTAL_INCOME - oldTotalBillsPaid - spentCash;
             let saldoPaylater = LIMIT_PAYLATER - spentPaylater;
-
             let totalBillsUnpaid = fixedBills.filter(b => b.showInActive && !b.paid).reduce((sum, b) => sum + b.amount, 0); 
             let uangOperasionalAman = saldoUtama - totalBillsUnpaid;
-
-            const today = new Date();
-            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-            const remainingDays = (lastDay - today.getDate()) + 1;
+            const today = new Date(); const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate(); const remainingDays = (lastDay - today.getDate()) + 1;
             let jatahHarian = Math.floor(uangOperasionalAman / remainingDays);
-
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            
             document.getElementById('saldo-utama').innerText = formatIDR(saldoUtama);
             document.getElementById('sisa-paylater').innerText = formatIDR(saldoPaylater);
             document.getElementById('jatah-harian').innerText = jatahHarian > 0 ? formatIDR(jatahHarian) : "Rp 0";
             document.getElementById('sisa-hari').innerText = `${remainingDays} Hari`;
             document.getElementById('active-period').innerText = `PERIODE: ${months[today.getMonth()].toUpperCase()} ${today.getFullYear()}`;
-
-            // TAB 3 TITLE
             const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
             document.getElementById('draft-period-title').innerText = `PERIODE: ${months[nextMonthDate.getMonth()].toUpperCase()} ${nextMonthDate.getFullYear()}`;
             document.getElementById('draft-view-period').innerText = `${months[nextMonthDate.getMonth()]} ${nextMonthDate.getFullYear()}`;
-
-            // RENDER BILLS
-            const billsContainer = document.getElementById('bills-container');
-            billsContainer.innerHTML = '';
+            const billsContainer = document.getElementById('bills-container'); billsContainer.innerHTML = '';
             fixedBills.filter(b => b.showInActive).forEach(bill => {
                 const isPaidClass = bill.paid ? "bg-[#F8FAFC] border-gray-100 opacity-60" : "bg-white border-gray-100 shadow-sm";
                 const iconBg = bill.paid ? "bg-[#4A8B82] text-white" : `${bill.bg} ${bill.color}`;
-                const actionBtn = bill.paid 
-                    ? `<div class="flex items-center gap-2"><span class="text-[10px] font-extrabold text-[#3B7A72] bg-[#E5F2F0] px-2 py-1 rounded-md"><i class="fa-solid fa-check mr-1"></i>${bill.date}</span><button onclick="window.cancelBill(${bill.id})" class="w-6 h-6 bg-gray-100 hover:bg-[#FCE3E1] text-gray-400 hover:text-[#A14740] rounded-md flex items-center justify-center transition" title="Batal Bayar"><i class="fa-solid fa-rotate-left text-[10px]"></i></button></div>`
-                    : `<button onclick="window.payBill(${bill.id})" class="text-xs font-bold text-gray-500 bg-gray-100 hover:bg-[#4A8B82] hover:text-white px-3 py-1.5 rounded-lg transition">Bayar</button>`;
-
-                billsContainer.innerHTML += `
-                    <div class="${isPaidClass} rounded-2xl p-4 border flex items-center justify-between transition-all duration-300">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center text-lg transition-colors shrink-0"><i class="fa-solid ${bill.icon}"></i></div>
-                            <div>
-                                <p class="text-sm font-extrabold ${bill.paid ? 'text-gray-400 line-through' : 'text-gray-700'}">${bill.name}</p>
-                                <p class="text-xs font-extrabold ${bill.paid ? 'text-gray-300' : 'text-[#4A8B82]'}">${formatIDR(bill.amount)}</p>
-                            </div>
-                        </div>
-                        ${actionBtn}
-                    </div>
-                `;
+                const actionBtn = bill.paid ? `<div class="flex items-center gap-2"><span class="text-[10px] font-extrabold text-[#3B7A72] bg-[#E5F2F0] px-2 py-1 rounded-md"><i class="fa-solid fa-check mr-1"></i>${bill.date}</span><button onclick="window.cancelBill(${bill.id})" class="w-6 h-6 bg-gray-100 hover:bg-[#FCE3E1] text-gray-400 hover:text-[#A14740] rounded-md flex items-center justify-center transition" title="Batal Bayar"><i class="fa-solid fa-rotate-left text-[10px]"></i></button></div>` : `<button onclick="window.payBill(${bill.id})" class="text-xs font-bold text-gray-500 bg-gray-100 hover:bg-[#4A8B82] hover:text-white px-3 py-1.5 rounded-lg transition">Bayar</button>`;
+                billsContainer.innerHTML += `<div class="${isPaidClass} rounded-2xl p-4 border flex items-center justify-between transition-all duration-300"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center text-lg transition-colors shrink-0"><i class="fa-solid ${bill.icon}"></i></div><div><p class="text-sm font-extrabold ${bill.paid ? 'text-gray-400 line-through' : 'text-gray-700'}">${bill.name}</p><p class="text-xs font-extrabold ${bill.paid ? 'text-gray-300' : 'text-[#4A8B82]'}">${formatIDR(bill.amount)}</p></div></div>${actionBtn}</div>`;
             });
-
-            // RENDER DRAFT PLANNING (TAB 3)
-            const viewMode = document.getElementById('draft-view-mode');
-            const editMode = document.getElementById('draft-edit-mode');
-            const draftContainer = document.getElementById('draft-container');
-            
+            const viewMode = document.getElementById('draft-view-mode'); const editMode = document.getElementById('draft-edit-mode'); const draftContainer = document.getElementById('draft-container');
             if (draftBills === null || draftUIState === 'edit') {
-                viewMode.classList.add('hidden'); editMode.classList.remove('hidden');
-                draftContainer.innerHTML = '';
+                viewMode.classList.add('hidden'); editMode.classList.remove('hidden'); draftContainer.innerHTML = '';
                 let dataToRender = draftBills || fixedBills.filter(b => b.showInDraft); 
-                
-                dataToRender.forEach(bill => {
-                    draftContainer.innerHTML += `
-                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
-                            <label class="text-xs font-bold text-gray-600 w-1/2">${bill.name}</label>
-                            <input type="number" id="draft-input-${bill.id}" value="${bill.amount}" class="w-1/2 bg-white border border-gray-200 rounded-lg p-2 text-right text-sm font-bold text-gray-800 outline-none focus:border-[#4A8B82]">
-                        </div>
-                    `;
-                });
+                dataToRender.forEach(bill => { draftContainer.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100"><label class="text-xs font-bold text-gray-600 w-1/2">${bill.name}</label><input type="number" id="draft-input-${bill.id}" value="${bill.amount}" class="w-1/2 bg-white border border-gray-200 rounded-lg p-2 text-right text-sm font-bold text-gray-800 outline-none focus:border-[#4A8B82]"></div>`; });
             } else {
                 viewMode.classList.remove('hidden'); editMode.classList.add('hidden');
-                if (today.getDate() < 25) {
-                    document.getElementById('draft-edit-container').classList.remove('hidden');
-                    document.getElementById('draft-locked-container').classList.add('hidden');
-                } else {
-                    document.getElementById('draft-edit-container').classList.add('hidden');
-                    document.getElementById('draft-locked-container').classList.remove('hidden');
-                }
+                if (today.getDate() < 25) { document.getElementById('draft-edit-container').classList.remove('hidden'); document.getElementById('draft-locked-container').classList.add('hidden'); } else { document.getElementById('draft-edit-container').classList.add('hidden'); document.getElementById('draft-locked-container').classList.remove('hidden'); }
             }
-
-            // FILTER & RENDER RECENT SPENDING
-            const spendContainer = document.getElementById('spending-list');
-            const btnClearFilter = document.getElementById('btn-clear-filter');
-            const btnSeeAllCont = document.getElementById('btn-see-all-container');
-            
+            const spendContainer = document.getElementById('spending-list'); const btnClearFilter = document.getElementById('btn-clear-filter'); const btnSeeAllCont = document.getElementById('btn-see-all-container');
             let filteredSpending = [...recentSpending].reverse(); 
-            
-            if(filterDate) {
-                filteredSpending = filteredSpending.filter(s => s.date === filterDate);
-                document.getElementById('spending-list-title').innerHTML = `Aktivitas <span class="text-[#A14740] bg-[#FCE3E1] px-2 py-0.5 rounded ml-1 text-xs">${filterDate}</span>`;
-                btnClearFilter.classList.remove('hidden');
-            } else {
-                document.getElementById('spending-list-title').innerText = `Aktivitas Terakhir`;
-                btnClearFilter.classList.add('hidden');
-            }
-
-            if(searchQuery) {
-                filteredSpending = filteredSpending.filter(s => (s.desc && s.desc.toLowerCase().includes(searchQuery)) || s.cat.toLowerCase().includes(searchQuery));
-            }
-
+            if(filterDate) { filteredSpending = filteredSpending.filter(s => s.date === filterDate); document.getElementById('spending-list-title').innerHTML = `Aktivitas <span class="text-[#A14740] bg-[#FCE3E1] px-2 py-0.5 rounded ml-1 text-xs">${filterDate}</span>`; btnClearFilter.classList.remove('hidden'); } 
+            else { document.getElementById('spending-list-title').innerText = `Aktivitas Terakhir`; btnClearFilter.classList.add('hidden'); }
+            if(searchQuery) { filteredSpending = filteredSpending.filter(s => (s.desc && s.desc.toLowerCase().includes(searchQuery)) || s.cat.toLowerCase().includes(searchQuery)); }
             currentFilteredData = filteredSpending; 
-
-            if (filteredSpending.length === 0) {
-                spendContainer.innerHTML = `<p class="text-center text-xs font-semibold text-gray-400 italic mt-6">Belum ada aktivitas dicatat.</p>`;
-                btnSeeAllCont.classList.add('hidden');
-            } else {
-                spendContainer.innerHTML = '';
-                const displayData = filteredSpending.slice(0, 5);
+            if (filteredSpending.length === 0) { spendContainer.innerHTML = `<p class="text-center text-xs font-semibold text-gray-400 italic mt-6">Belum ada aktivitas dicatat.</p>`; btnSeeAllCont.classList.add('hidden'); } 
+            else {
+                spendContainer.innerHTML = ''; const displayData = filteredSpending.slice(0, 5);
                 displayData.forEach(spend => { spendContainer.innerHTML += createSpendingHTML(spend); });
-                if(filteredSpending.length > 5) btnSeeAllCont.classList.remove('hidden');
-                else btnSeeAllCont.classList.add('hidden');
+                if(filteredSpending.length > 5) btnSeeAllCont.classList.remove('hidden'); else btnSeeAllCont.classList.add('hidden');
             }
-
-            renderChart(); 
-            renderCalendar();
+            renderChart(); renderCalendar();
         };
 
-        // --- FIREBASE SYNC LOGIC ---
+        // --- FIREBASE LOGIC ---
         async function syncDataFromCloud() {
             try {
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if(data.fixedBills) {
-                        fixedBills = fixedBills.map(base => {
-                            const cloud = data.fixedBills.find(b => b.id === base.id);
-                            return cloud ? { ...base, ...cloud } : base;
-                        });
-                    }
+                    if(data.fixedBills) { fixedBills = fixedBills.map(base => { const cloud = data.fixedBills.find(b => b.id === base.id); return cloud ? { ...base, ...cloud } : base; }); }
                     if(data.recentSpending) recentSpending = data.recentSpending;
                     if(data.draftBills) { draftBills = data.draftBills; draftUIState = 'view'; }
-                } else {
-                    await setDoc(docRef, { fixedBills, recentSpending });
-                }
+                } else { await setDoc(docRef, { fixedBills, recentSpending }); }
                 recentSpending = recentSpending.map((s, i) => { if(!s.id) s.id = Date.now() + i; return s; });
-                document.getElementById('sync-text').innerText = "Tersinkronisasi";
-                document.getElementById('sync-dot').classList.remove('animate-pulse');
+                document.getElementById('sync-text').innerText = "Tersinkronisasi"; document.getElementById('sync-dot').classList.remove('animate-pulse');
                 renderApp();
-            } catch (error) {
-                console.error("Firebase Error:", error);
-                document.getElementById('sync-text').innerText = "Mode Offline";
-                document.getElementById('sync-dot').classList.replace('bg-[#3B7A72]', 'bg-gray-400');
-            }
+            } catch (error) { document.getElementById('sync-text').innerText = "Mode Offline"; document.getElementById('sync-dot').classList.replace('bg-[#3B7A72]', 'bg-gray-400'); }
         }
 
         window.payBill = async (id) => {
             let bill = fixedBills.find(b => b.id === id);
             if(bill && !bill.paid) {
-                bill.paid = true;
-                const d = new Date(); 
-                const dateStr = d.toISOString().split('T')[0];
-                const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+                bill.paid = true; const d = new Date(); 
+                const dateStr = d.toISOString().split('T')[0]; const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
                 bill.date = `${d.getDate()} ${d.toLocaleString('id-ID', {month:'short'})}`;
-                const newTrxId = Date.now();
-                bill.linkedTrxId = newTrxId;
+                const newTrxId = Date.now(); bill.linkedTrxId = newTrxId;
                 recentSpending.push({ id: newTrxId, amount: bill.amount, cat: bill.cat, desc: `[Sistem] Pelunasan ${bill.name}`, date: dateStr, time: timeStr });
-                renderApp(); 
-                try { await updateDoc(docRef, { fixedBills, recentSpending }); } catch (e) { console.error(e); }
+                renderApp(); try { await updateDoc(docRef, { fixedBills, recentSpending }); } catch (e) { console.error(e); }
             }
         };
 
         window.cancelBill = async (id) => {
             let bill = fixedBills.find(b => b.id === id);
             if(bill && bill.paid) {
-                bill.paid = false;
-                bill.date = null;
-                if(bill.linkedTrxId) {
-                    recentSpending = recentSpending.filter(s => s.id !== bill.linkedTrxId);
-                    bill.linkedTrxId = null;
-                }
-                renderApp();
-                try { await updateDoc(docRef, { fixedBills, recentSpending }); } catch (e) { console.error(e); }
+                bill.paid = false; bill.date = null;
+                if(bill.linkedTrxId) { recentSpending = recentSpending.filter(s => s.id !== bill.linkedTrxId); bill.linkedTrxId = null; }
+                renderApp(); try { await updateDoc(docRef, { fixedBills, recentSpending }); } catch (e) { console.error(e); }
             }
         };
 
-        window.openSpendingModal = () => {
-            document.getElementById('modal-spending-title').innerText = "Catat Pengeluaran Baru";
-            document.getElementById('modal-edit-id').value = '';
-            document.getElementById('modal-amount').value = '';
-            document.getElementById('modal-desc').value = '';
-            const todayStr = new Date().toISOString().split('T')[0];
-            document.getElementById('modal-date').value = todayStr;
-            document.getElementById('modal-spending').classList.remove('hidden');
-        };
-
+        window.openSpendingModal = () => { document.getElementById('modal-spending-title').innerText = "Catat Pengeluaran Baru"; document.getElementById('modal-edit-id').value = ''; document.getElementById('modal-amount').value = ''; document.getElementById('modal-desc').value = ''; const todayStr = new Date().toISOString().split('T')[0]; document.getElementById('modal-date').value = todayStr; document.getElementById('modal-spending').classList.remove('hidden'); };
         window.closeSpendingModal = () => { document.getElementById('modal-spending').classList.add('hidden'); };
-
         window.editSpending = (id) => {
-            const spend = recentSpending.find(s => s.id === id);
-            if(!spend) return;
-            document.getElementById('modal-spending-title').innerText = "Edit Transaksi";
-            document.getElementById('modal-edit-id').value = spend.id;
-            document.getElementById('modal-amount').value = spend.amount;
-            document.getElementById('modal-desc').value = spend.desc || '';
-            document.getElementById('modal-date').value = spend.date || new Date().toISOString().split('T')[0];
-            const radio = document.querySelector(`input[name="category"][value="${spend.cat}"]`);
-            if(radio) radio.checked = true;
-            document.getElementById('modal-spending').classList.remove('hidden');
-            window.closeSeeAllModal(); 
+            const spend = recentSpending.find(s => s.id === id); if(!spend) return;
+            document.getElementById('modal-spending-title').innerText = "Edit Transaksi"; document.getElementById('modal-edit-id').value = spend.id; document.getElementById('modal-amount').value = spend.amount; document.getElementById('modal-desc').value = spend.desc || ''; document.getElementById('modal-date').value = spend.date || new Date().toISOString().split('T')[0];
+            const radio = document.querySelector(`input[name="category"][value="${spend.cat}"]`); if(radio) radio.checked = true;
+            document.getElementById('modal-spending').classList.remove('hidden'); window.closeSeeAllModal(); 
         };
-
         window.saveSpending = async () => {
-            const idVal = document.getElementById('modal-edit-id').value;
-            const amount = parseInt(document.getElementById('modal-amount').value);
-            const desc = document.getElementById('modal-desc').value;
-            const cat = document.querySelector('input[name="category"]:checked').value;
-            const dateStr = document.getElementById('modal-date').value;
-            
+            const idVal = document.getElementById('modal-edit-id').value; const amount = parseInt(document.getElementById('modal-amount').value); const desc = document.getElementById('modal-desc').value; const cat = document.querySelector('input[name="category"]:checked').value; const dateStr = document.getElementById('modal-date').value;
             if(amount > 0 && dateStr) {
-                const d = new Date();
-                const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-                
-                if(idVal) { 
-                    const idx = recentSpending.findIndex(s => s.id === parseInt(idVal));
-                    if(idx !== -1) {
-                        recentSpending[idx] = { id: parseInt(idVal), amount, cat, desc, date: dateStr, time: timeStr };
-                        const bill = fixedBills.find(b => b.linkedTrxId === parseInt(idVal));
-                        if(bill) { bill.amount = amount; } 
-                    }
-                } else { 
-                    recentSpending.push({ id: Date.now(), amount, cat, desc, date: dateStr, time: timeStr });
-                }
-                renderApp(); closeSpendingModal();
-                try { await updateDoc(docRef, { recentSpending, fixedBills }); } catch (e) { console.error(e); }
+                const d = new Date(); const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+                if(idVal) { const idx = recentSpending.findIndex(s => s.id === parseInt(idVal)); if(idx !== -1) { recentSpending[idx] = { id: parseInt(idVal), amount, cat, desc, date: dateStr, time: timeStr }; const bill = fixedBills.find(b => b.linkedTrxId === parseInt(idVal)); if(bill) { bill.amount = amount; } } } 
+                else { recentSpending.push({ id: Date.now(), amount, cat, desc, date: dateStr, time: timeStr }); }
+                renderApp(); closeSpendingModal(); try { await updateDoc(docRef, { recentSpending, fixedBills }); } catch (e) { console.error(e); }
             }
         };
 
-        window.openSeeAllModal = () => {
-            const listContainer = document.getElementById('modal-see-all-list');
-            listContainer.innerHTML = '';
-            let title = "Semua Transaksi";
-            if(filterDate) title = `Transaksi ${filterDate}`;
-            if(searchQuery) title += ` (${searchQuery})`;
-            document.getElementById('see-all-title').innerText = title;
-            currentFilteredData.forEach(spend => { listContainer.innerHTML += createSpendingHTML(spend); });
-            document.getElementById('modal-see-all').classList.remove('hidden');
-        };
-
+        window.openSeeAllModal = () => { const listContainer = document.getElementById('modal-see-all-list'); listContainer.innerHTML = ''; let title = "Semua Transaksi"; if(filterDate) title = `Transaksi ${filterDate}`; if(searchQuery) title += ` (${searchQuery})`; document.getElementById('see-all-title').innerText = title; currentFilteredData.forEach(spend => { listContainer.innerHTML += createSpendingHTML(spend); }); document.getElementById('modal-see-all').classList.remove('hidden'); };
         window.closeSeeAllModal = () => { document.getElementById('modal-see-all').classList.add('hidden'); };
-
         window.confirmDelete = (id) => { deleteTargetId = id; document.getElementById('modal-delete').classList.remove('hidden'); };
         window.closeDeleteModal = () => { deleteTargetId = null; document.getElementById('modal-delete').classList.add('hidden'); };
-        
         window.executeDelete = async () => {
             if(deleteTargetId) {
-                const billLinked = fixedBills.find(b => b.linkedTrxId === deleteTargetId);
-                if(billLinked) {
-                    billLinked.paid = false;
-                    billLinked.date = null;
-                    billLinked.linkedTrxId = null;
-                }
-                recentSpending = recentSpending.filter(s => s.id !== deleteTargetId);
-                renderApp(); closeDeleteModal();
+                const billLinked = fixedBills.find(b => b.linkedTrxId === deleteTargetId); if(billLinked) { billLinked.paid = false; billLinked.date = null; billLinked.linkedTrxId = null; }
+                recentSpending = recentSpending.filter(s => s.id !== deleteTargetId); renderApp(); closeDeleteModal();
                 if(!document.getElementById('modal-see-all').classList.contains('hidden')) window.openSeeAllModal(); 
                 try { await updateDoc(docRef, { recentSpending, fixedBills }); } catch (e) { console.error(e); }
             }
@@ -758,31 +542,21 @@
         window.editDraft = () => { draftUIState = 'edit'; renderApp(); };
         window.saveDraft = async () => {
             let baseArray = draftBills || fixedBills.filter(b => b.showInDraft);
-            let updatedDraft = baseArray.map(bill => {
-                let inputEl = document.getElementById(`draft-input-${bill.id}`);
-                return { ...bill, amount: inputEl ? (parseInt(inputEl.value) || 0) : bill.amount };
-            });
-            draftBills = updatedDraft; draftUIState = 'view'; renderApp(); 
-            try { await updateDoc(docRef, { draftBills }); } catch (e) { console.error(e); }
+            let updatedDraft = baseArray.map(bill => { let inputEl = document.getElementById(`draft-input-${bill.id}`); return { ...bill, amount: inputEl ? (parseInt(inputEl.value) || 0) : bill.amount }; });
+            draftBills = updatedDraft; draftUIState = 'view'; renderApp(); try { await updateDoc(docRef, { draftBills }); } catch (e) { console.error(e); }
         };
 
-        // --- TABS NAVIGATION ---
         window.switchTab = (tabName) => {
-            const tabs = ['omnibox', 'dashboard', 'draft'];
-            tabs.forEach(t => {
+            ['omnibox', 'dashboard', 'draft'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).classList.replace('text-[#4A8B82]', 'text-gray-400');
             });
-            
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
             document.getElementById(`nav-${tabName}`).classList.replace('text-gray-400', 'text-[#4A8B82]');
-            
             const fab = document.getElementById('fab-manual-input');
-            if(tabName === 'dashboard') fab.classList.remove('hidden');
-            else fab.classList.add('hidden');
+            if(tabName === 'dashboard') fab.classList.remove('hidden'); else fab.classList.add('hidden');
         };
 
-        // Boot
         syncDataFromCloud();
     </script>
 </body>
